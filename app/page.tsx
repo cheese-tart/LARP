@@ -8,18 +8,9 @@ import { projects } from "./projects";
 const shortcuts = [
   { screen: "Overview", label: "Overview", icon: "grid", color: "home" },
   { screen: "Experience", label: "Experience", icon: "briefcase", color: "experience" },
-  { screen: "Projects", label: "All projects", icon: "tools", color: "projects" },
+  { screen: "Projects", label: "All projects", sidebarLabel: "Projects", icon: "tools", color: "projects" },
   { screen: "About", label: "About", icon: "user", color: "profile" },
   { screen: "Contact", label: "Contact", icon: "mail", color: "contact" },
-] as const;
-
-const [overview, experience, allProjects, about, contact] = shortcuts;
-const sidebarShortcuts = [
-  overview,
-  experience,
-  { ...allProjects, label: "Projects" },
-  about,
-  contact,
 ] as const;
 
 type Section = "Home" | (typeof shortcuts)[number]["screen"];
@@ -30,12 +21,14 @@ const entriesBySection: Partial<Record<Section, readonly PortfolioEntry[]>> = {
   Experience: experiences,
 };
 
-const overviewTiles = [...experiences, ...projects, experience, allProjects, about, contact]
-  .sort((a, b) => {
-    const firstLabel = "label" in a ? a.label : a.name;
-    const secondLabel = "label" in b ? b.label : b.name;
-    return firstLabel.localeCompare(secondLabel, "en");
-  });
+const overviewTiles = [
+  ...Object.values(entriesBySection).flat(),
+  ...shortcuts.filter((item) => item.screen !== "Overview"),
+].sort((a, b) => {
+  const firstLabel = "label" in a ? a.label : a.name;
+  const secondLabel = "label" in b ? b.label : b.name;
+  return firstLabel.localeCompare(secondLabel, "en");
+});
 
 export default function Home() {
   const [screen, setScreen] = useState<Section>("Home");
@@ -102,11 +95,11 @@ export default function Home() {
               <Icon name="home" size={21} />
               <span>Home</span>
             </button>
-            {sidebarShortcuts.map((item) => (
+            {shortcuts.map((item) => (
               <button key={item.screen} aria-current={screen === item.screen ? "page" : undefined}
                 onClick={() => setScreen(item.screen)}>
                 <Icon name={item.icon} size={21} />
-                <span>{item.label}</span>
+                <span>{"sidebarLabel" in item ? item.sidebarLabel : item.label}</span>
               </button>
             ))}
           </nav>
