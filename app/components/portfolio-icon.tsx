@@ -9,88 +9,27 @@ const paths = {
       <path d="M8 11v6m4 0v-6m0 3a2.5 2.5 0 0 1 5 0v3" />
     </>
   ),
-  resume: (
-    <>
-      <path d="M5 3h9l5 5v13H5zM14 3v5h5M8 12h8m-8 4h8" />
-    </>
-  ),
-  home: (
-    <>
-      <path d="m3 10 9-7 9 7v11H3z" />
-      <path d="M9 21v-8h6v8" />
-    </>
-  ),
-  grid: (
-    <>
-      <rect x="3" y="3" width="6" height="6" />
-      <rect x="15" y="3" width="6" height="6" />
-      <rect x="3" y="15" width="6" height="6" />
-      <rect x="15" y="15" width="6" height="6" />
-    </>
-  ),
-  tools: (
-    <>
-      <path d="M15 6l3 3 3-3a5 5 0 0 1-6 6L6 21a2 2 0 0 1-3-3l9-9a5 5 0 0 1 6-6z" />
-      <path d="m3 4 1-1 3 2-2 2zM6 6l3 3m7 5 5 5-2 2-5-5" />
-    </>
-  ),
-  user: (
-    <>
-      <circle cx="12" cy="6.5" r="3.5" />
-      <path d="M5 21v-1a7 7 0 0 1 14 0v1" />
-    </>
-  ),
-  mail: (
-    <>
-      <rect x="3" y="5" width="18" height="14" />
-      <path d="m3 6 9 7 9-7" />
-    </>
-  ),
-  sun: (
-    <>
-      <circle cx="12" cy="12" r="4" />
-      <path d="M12 1v3m0 16v3M1 12h3m16 0h3M4 4l2 2m12 12 2 2M4 20l2-2M18 6l2-2" />
-    </>
-  ),
-  orbit: (
-    <>
-      <circle cx="12" cy="12" r="5" />
-      <ellipse cx="12" cy="12" rx="11" ry="4" transform="rotate(-35 12 12)" />
-    </>
-  ),
-  forma: (
-    <>
-      <path d="M3 21V10l6-4v15m0 0V3l7 4v14m0 0V10l5 3v8z" />
-      <path d="M2 21h20" />
-    </>
-  ),
-  pulse: <path d="M2 12h4l3-7 5 14 3-7h5"/>,
-  briefcase: (
-    <>
-      <rect x="3" y="7" width="18" height="13" />
-      <path d="M8 7V4h8v3M3 12h18m-9-1v3" />
-    </>
-  ),
-  frontend: <path d="m8 6-6 6 6 6m8-12 6 6-6 6m-2-15-4 18" />,
-  design: (
-    <>
-      <path d="M3 21l2-6L16 4l4 4L9 19zM13 7l4 4M5 15l4 4" />
-      <path d="M15 21h6" />
-    </>
-  ),
-  web: (
-    <>
-      <circle cx="12" cy="12" r="9" />
-      <ellipse cx="12" cy="12" rx="4" ry="9" />
-      <path d="M3 12h18" />
-    </>
-  ),
+  resume: <><path className="icon-tone" d="M5 2h9l5 5v15H5z" /><path d="M14 2v6h5M8 12h8m-8 4h5" /><path d="M8 20h3" /></>,
+  home: <><path className="icon-tone" d="M4 10 12 3l8 7v11H4z" /><path d="m2 11 10-9 10 9M9 21v-8h6v8" /></>,
+  grid: <><path className="icon-tone" d="M3 3h7v7H3zm11 11h7v7h-7z" /><path d="M14 3h7v7h-7zM3 14h7v7H3z" /></>,
+  tools: <><path className="icon-tone" d="m12 2 10 5-10 5L2 7z" /><path d="m2 12 10 5 10-5M2 17l10 5 10-5M12 12v10" /></>,
+  user: <><path className="icon-tone" d="M4 22v-3a8 8 0 0 1 16 0v3z" /><circle cx="12" cy="7" r="4" /><path d="m8 14 4 4 4-4" /></>,
+  mail: <><path className="icon-tone" d="M2 6h20v15H2z" /><path d="m2 6 10 8L22 6M2 21l7-7m13 7-7-7M7 3h10" /></>,
+  sport: <><path className="icon-tone" d="M4 20a10 10 0 1 1 16 0z" /><path d="M4 20a10 10 0 1 1 16 0H4ZM5 12h2m10 0h2M12 5v2M6 6l1.5 1.5M18 6l-1.5 1.5M12 15l5-6" /><circle cx="12" cy="15" r="1.5" fill="currentColor" stroke="none" /></>,
+  comfort: <><path className="icon-tone" d="M4 20a10 10 0 1 1 16 0z" /><path d="M4 20a10 10 0 1 1 16 0H4ZM5 12h2m10 0h2M12 5v2M6 6l1.5 1.5M18 6l-1.5 1.5M12 15l-4-4" /><circle cx="12" cy="15" r="1.5" fill="currentColor" stroke="none" /></>,
+  orbit: <><circle className="icon-tone" cx="12" cy="12" r="6" /><ellipse cx="12" cy="12" rx="11" ry="4" transform="rotate(-38 12 12)" /><path d="M10 8a4 4 0 0 1 5 2" /><circle cx="20" cy="5" r="1.6" fill="currentColor" stroke="none" /></>,
+  forma: <><path className="icon-tone" d="m3 21 7-18 5 9-4 9z" /><path d="m10 3 11 18H3zm-3 9h8m-4 9 4-9 6 9" /></>,
+  pulse: <><path className="icon-tone" d="M2 9h3v6H2zm8-6h4v18h-4zm9 4h3v10h-3z" /><path d="M7 6v12M17 4v16" /></>,
+  briefcase: <><path className="icon-tone" d="M2 7h20v14H2z" /><path d="M8 7V3h8v4M2 11l10 4 10-4M10 14v3h4v-3" /></>,
+  frontend: <><rect className="icon-tone" x="2" y="3" width="20" height="16" rx="1" /><path d="M2 7h20m-13 3-3 3 3 3m6-6 3 3-3 3M8 22h8m-4-3v3" /><path d="M5 5h.01M8 5h.01" /></>,
+  design: <><path className="icon-tone" d="m12 2 8 12-8 8-8-8z" /><path d="M12 2v10m-8 2h5m6 0h5" /><circle cx="12" cy="14" r="3" /></>,
+  web: <><path className="icon-tone" d="M3 6h18v15H3z" /><path d="M3 10h18M7 3h10M7 14l-2 2 2 2m10-4 2 2-2 2m-4-5-2 6" /></>,
 };
 
 export function Icon({ name, size = 22 }: { name: keyof typeof paths; size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none"
-      stroke="currentColor" strokeWidth="1.65" strokeLinecap="round"
+      stroke="currentColor" className={`portfolio-icon icon-${name}`} strokeWidth="1.7" strokeLinecap="round"
       strokeLinejoin="round" aria-hidden="true">
       {paths[name]}
     </svg>

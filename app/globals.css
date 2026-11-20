@@ -176,11 +176,19 @@ button:focus-visible, a:focus-visible { outline: 2px solid #fff; outline-offset:
 }
 .portfolio[data-mode="Sport"] :is(.display-area, .side-rail, .side-nav)::before { opacity: 1; }
 @media (width > 680px) {
-  .side-rail::before {
+  .side-rail {
     /* Offset the stops to account for the triangular ends of a 45° gradient. */
     --diagonal-offset: calc(var(--rail-width) * .11785113);
     --first-band-end: calc(100% / 3 + var(--diagonal-offset));
     --second-band-end: calc(100% * 2 / 3 - var(--diagonal-offset));
+    background: linear-gradient(
+      45deg,
+      #202a3a var(--first-band-end),
+      #182231 var(--first-band-end) var(--second-band-end),
+      #111a28 var(--second-band-end)
+    );
+  }
+  .side-rail::before {
     background: linear-gradient(
       45deg,
       #2b384d var(--first-band-end),
@@ -279,8 +287,11 @@ button:focus-visible, a:focus-visible { outline: 2px solid #fff; outline-offset:
 .app-grid .app-icon {
   color: #fff;
 }
+.icon-tone { fill: currentColor; fill-opacity: .24; }
 .app-grid .app-icon svg {
-  stroke-width: 2.2;
+  width: 34px;
+  height: 34px;
+  stroke-width: 1.65;
   filter: drop-shadow(0 1px 2px #031529b3);
 }
 .app-icon.orbit {
@@ -296,11 +307,10 @@ button:focus-visible, a:focus-visible { outline: 2px solid #fff; outline-offset:
   --icon-dark: #76246e;
   --icon-facets: linear-gradient(135deg, #ffffff1e 18%, transparent 20% 47%, #080f2728 49% 72%, #ffffff10 74%);
 }
-.app-icon:is(.experience, .projects, .profile, .contact) {
-  background:
-    linear-gradient(45deg, #ffffff1c 38%, transparent 40%),
-    linear-gradient(to bottom, #0c9ee4, #175578 52%, #04c5a4);
-}
+.app-icon.experience { --icon-light: #d89743; --icon-dark: #70431f; }
+.app-icon.projects { --icon-light: #438cce; --icon-dark: #243f82; }
+.app-icon.profile { --icon-light: #9b7ad7; --icon-dark: #503776; }
+.app-icon.contact { --icon-light: #28b7b0; --icon-dark: #14616f; }
 .app-icon.frontend {
   --icon-light: #199bea;
   --icon-dark: #114d8d;

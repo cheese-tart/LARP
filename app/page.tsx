@@ -85,10 +85,10 @@ export default function Home() {
             <time className="status-clock">
               {clock.digits}{clock.period && <span className="clock-period"> {clock.period}</span>}
             </time>
-            <button className="display-toggle" aria-label="Sport display mode"
+            <button className="display-toggle" aria-label={`Sport display mode, ${mode === "Sport" ? "on" : "off"}`}
               aria-pressed={mode === "Sport"}
               onClick={() => setMode((current) => current === "Comfort" ? "Sport" : "Comfort")}>
-              <Icon name="sun" size={17} />
+              <Icon name={mode === "Sport" ? "sport" : "comfort"} size={19} />
               <span>{mode}</span>
             </button>
           </div>
