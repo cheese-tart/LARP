@@ -1,26 +1,353 @@
-@import "tailwindcss";
-
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  color-scheme: dark;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-weight: 400;
+  line-height: 1.45;
+  color: #edf5ff;
+  background: #06090f;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+* { box-sizing: border-box; }
+body { margin: 0; }
+button, a { -webkit-tap-highlight-color: transparent; }
+button { font: inherit; color: inherit; cursor: pointer; }
+button:focus-visible, a:focus-visible { outline: 2px solid #fff; outline-offset: -3px; }
+.portfolio :is(button, .action) {
+  transition: background-color 180ms ease, color 180ms ease,
+    box-shadow 180ms ease, transform 140ms ease-out;
+}
+.portfolio :is(button, .action):active {
+  transform: scale(.96);
+  transition-duration: 75ms;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+.portfolio {
+  --accent: #a2bad7;
+  --screen-top: #1a1d24;
+  --status-surface: #262d38;
+  --rail-selected: #f0b29b;
+}
+.portfolio[data-mode="Sport"] {
+  --accent: #92c5ee;
+  --screen-top: #151b25;
+  --status-surface: #232e40;
+  --rail-selected: #79c7ff;
+  --sport-tile-red: #e31627;
+  --identity-color: var(--sport-tile-red);
+}
+
+.console {
+  --rail-width: 113px;
+  display: grid;
+  grid-template:
+    "rail status" auto
+    "rail display" 1fr / var(--rail-width) minmax(0, 1fr);
+  min-height: 100dvh;
+  background: #060a13;
+}
+.status-bar {
+  grid-area: status;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  min-height: 64px;
+  padding: 10px 22px;
+  background: var(--screen-top);
+}
+.identity {
+  display: grid;
+  place-items: center;
+  min-height: 64px;
+  padding: 10px 8px;
+  text-align: center;
+  overflow-wrap: anywhere;
+  font-size: 16px;
+  font-weight: 500;
+  letter-spacing: -.015em;
+  color: var(--identity-color, var(--rail-selected));
+  transition: color 300ms ease, background-color 300ms ease;
+}
+.status-strip {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 0 0 20px;
+  background: var(--status-surface);
+  clip-path: polygon(12px 0, 100% 0, 100% 100%, 0 100%);
+  white-space: nowrap;
+}
+.status-bar, .status-strip { transition: background-color 300ms ease; }
+.display-toggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  padding: 0 10px;
+  border: 0;
+  background: #ffffff0c;
+  color: var(--accent);
+  font-size: 13px;
+}
+.display-toggle:hover { background: #ffffff20; }
+.display-toggle span { min-width: 8ch; text-align: left; }
+time { font-variant-numeric: lining-nums tabular-nums; font-weight: 500; }
+
+.display-area {
+  grid-area: display;
+  min-width: 0;
+  background:
+    radial-gradient(ellipse at 52% 110%, #688bb8b3, transparent 61%),
+    linear-gradient(to bottom, #1a1d24 12%, #252e3c 62%, #2e4663);
+}
+.side-rail {
+  grid-area: rail;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(155deg, #0c1524, #070e1a 72%);
+}
+.side-nav { display: flex; flex-direction: column; }
+.display-area, .side-rail {
+  position: relative;
+  isolation: isolate;
+}
+.display-area::before, .side-rail::before, .side-nav::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 300ms ease;
+}
+.display-area::before {
+  background:
+    radial-gradient(ellipse at 52% 110%, #4d91c7c2, transparent 61%),
+    linear-gradient(to bottom, #151b25 12%, #1d2b41 62%, #294b71);
+}
+.portfolio[data-mode="Sport"] :is(.display-area, .side-rail, .side-nav)::before { opacity: 1; }
+@media (width > 680px) {
+  .side-rail::before {
+    /* Offset the stops to account for the triangular ends of a 45° gradient. */
+    --diagonal-offset: calc(var(--rail-width) * .11785113);
+    --first-band-end: calc(100% / 3 + var(--diagonal-offset));
+    --second-band-end: calc(100% * 2 / 3 - var(--diagonal-offset));
+    background: linear-gradient(
+      45deg,
+      #2b384d var(--first-band-end),
+      #232f43 var(--first-band-end) var(--second-band-end),
+      #1c2535 var(--second-band-end)
+    );
   }
 }
+.side-rail button {
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 4px;
+  min-height: 82px;
+  border: 0;
+  background: transparent;
+  font-size: 13px;
+  line-height: 1.2;
+  color: #e3e3ed;
+}
+.side-rail button:hover { background: #a1b3cc1c; }
+.side-rail button[aria-current] { color: var(--rail-selected); }
+.screen-content {
+  min-width: 0;
+  padding: 27px clamp(20px, 4vw, 52px) 42px;
+  animation: panel-in 200ms ease-out;
+}
+.screen-content h1 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: .035em;
+  color: var(--accent);
+  transition: color 300ms ease;
+}
+.app-grid {
+  --tile-size: 136px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(0, min(100%, var(--tile-size))));
+  grid-auto-rows: 1fr;
+  gap: 16px;
+}
+.app-tile {
+  position: relative;
+  isolation: isolate;
+  min-height: var(--tile-size);
+  display: grid;
+  justify-items: center;
+  align-content: start;
+  gap: 12px;
+  padding: 12px 4px;
+  border: 0;
+  background: transparent;
+  text-shadow: 0 1px 4px #000;
+}
+.app-tile strong { font-weight: 400; line-height: 1.2; overflow-wrap: anywhere; }
+.app-tile::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: linear-gradient(to bottom, #48405a, #785364 61%, #b77c78 82%, #eec49f);
+  opacity: 0;
+  transition: opacity 180ms ease;
+}
+.app-tile:is(:focus-visible, :active, [data-selected="true"])::before {
+  opacity: 1;
+}
+@media (hover: hover) {
+  .app-tile:hover::before { opacity: 1; }
+}
+.portfolio[data-mode="Sport"] .app-tile::before {
+  background:
+    repeating-linear-gradient(135deg, #cfddff36 0 1px, transparent 2px 5px),
+    linear-gradient(to bottom, #142e5a, #291f43 49%, #8a142a 77%, var(--sport-tile-red));
+  background-repeat: no-repeat;
+  background-clip: padding-box;
+}
+.app-icon {
+  --icon-light: #477aff;
+  --icon-dark: #152765;
+  --icon-facets: linear-gradient(45deg, #080f271c 43%, #ffffff14 45%);
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  flex: 0 0 auto;
+  border: 1px solid #ffffff50;
+  background:
+    var(--icon-facets),
+    linear-gradient(to bottom, var(--icon-light), var(--icon-dark));
+  box-shadow: 0 2px 5px #0005;
+}
+.app-icon.orbit {
+  --icon-facets: linear-gradient(45deg, #080f2724 28%, transparent 30% 59%, #ffffff1c 61%);
+}
+.app-icon.forma {
+  --icon-light: #a76b48;
+  --icon-dark: #532836;
+  --icon-facets: linear-gradient(45deg, #080f2726 62%, #ffffff15 64%);
+}
+.app-icon.pulse {
+  --icon-light: #cb5592;
+  --icon-dark: #50215c;
+  --icon-facets: linear-gradient(135deg, #ffffff1e 18%, transparent 20% 47%, #080f2728 49% 72%, #ffffff10 74%);
+}
+.app-icon.profile {
+  --icon-light: #5364bd;
+  --icon-dark: #27315c;
+  --icon-facets: linear-gradient(45deg, #080f271c 36%, transparent 38% 76%, #ffffff18 78%);
+}
+.app-icon.contact {
+  --icon-light: #229e99;
+  --icon-dark: #104650;
+  --icon-facets: linear-gradient(45deg, #080f2724 33%, #ffffff16 35%);
+}
+.app-icon.projects {
+  --icon-light: #278bbd;
+  --icon-dark: #113563;
+  --icon-facets: linear-gradient(45deg, #080f2728 23%, transparent 25% 64%, #ffffff1a 66%);
+}
+.app-icon.experience {
+  --icon-light: #64758f;
+  --icon-dark: #293951;
+  --icon-facets: linear-gradient(135deg, #ffffff18 55%, #080f2723 57%);
+}
+.app-icon.frontend {
+  --icon-light: #3187bf;
+  --icon-dark: #174366;
+  --icon-facets: linear-gradient(45deg, #080f272d 39%, transparent 41% 68%, #ffffff20 70%);
+}
+.app-icon.design {
+  --icon-light: #9c6bc7;
+  --icon-dark: #483263;
+  --icon-facets: linear-gradient(45deg, #080f2729 22%, #ffffff14 24% 44%, transparent 46% 71%, #ffffff20 73%);
+}
+.app-icon.web {
+  --icon-light: #278571;
+  --icon-dark: #1b4a50;
+  --icon-facets: linear-gradient(135deg, #ffffff1b 41%, #080f2723 43%);
+}
+.portfolio[data-mode="Comfort"] .app-tile .app-icon { border-color: transparent; }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+.text-panel {
+  max-width: 590px;
+  margin-top: 22px;
+  line-height: 1.6;
+}
+.text-panel p:first-child, .text-panel h2 { margin-top: 0; }
+.action { display: inline-flex; gap: 9px; color: var(--accent); }
+.action:hover { color: #fff; }
+.project-dialog {
+  width: min(540px, calc(100% - 32px));
+  padding: 0;
+  color: inherit;
+  background: #0a1528;
+  border: 1px solid #547495;
+}
+.project-dialog::backdrop { background: #000b; }
+.project-dialog[open] { animation: panel-in 150ms ease-out; }
+@keyframes panel-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: none; }
+}
+.dialog-body { position: relative; padding: 26px; line-height: 1.65; }
+.dialog-body h2 { margin: 0; font-size: 30px; }
+.fine-print { color: #becbe1; font-size: 13px; }
+.close-button {
+  position: absolute;
+  right: 12px;
+  top: 12px;
+  width: 44px;
+  height: 44px;
+  border: 1px solid #547495;
+  background: #121f35;
+  font-size: 24px;
+}
+.close-button:hover { background: #253955; }
+
+@media (max-width: 680px) {
+  .console {
+    grid-template:
+      "name status" auto
+      "nav nav" auto
+      "display display" 1fr / minmax(0, 1fr) auto;
+  }
+  .status-bar { padding: 10px 12px; }
+  .side-rail { display: contents; }
+  .side-rail::before { content: none; }
+  .identity {
+    grid-area: name;
+    place-items: center start;
+    padding-inline: 12px 0;
+    text-align: left;
+    background: var(--screen-top);
+  }
+  .side-nav {
+    grid-area: nav;
+    position: relative;
+    isolation: isolate;
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    background: linear-gradient(155deg, #0c1524, #070e1a 72%);
+  }
+  .side-nav::before { background: linear-gradient(155deg, #263248, #172337 72%); }
+  .side-rail button { min-height: 64px; padding-inline: 2px; font-size: 12px; }
+  .screen-content { padding: 24px 14px 30px; }
+  .app-tile { font-size: 14px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .portfolio :is(button, .action),
+  .status-bar, .status-strip, .identity, .screen-content h1,
+  .display-area::before, .side-rail::before, .side-nav::before,
+  .app-tile::before { transition: none; }
+  .portfolio :is(button, .action):active { transform: none; }
+  .screen-content, .project-dialog[open] { animation: none; }
 }

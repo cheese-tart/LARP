@@ -1,69 +1,133 @@
-import Image from "next/image";
+"use client";
+
+import { useEffect, useRef, useState } from "react";
+import { Icon } from "./components/portfolio-icon";
+import { experiences } from "./experiences";
+import { projects } from "./projects";
+
+const shortcuts = [
+  { screen: "Overview", label: "Overview", icon: "grid", color: "home" },
+  { screen: "Experience", label: "Experience", icon: "briefcase", color: "experience" },
+  { screen: "Projects", label: "All projects", icon: "tools", color: "projects" },
+  { screen: "About", label: "About", icon: "user", color: "profile" },
+  { screen: "Contact", label: "Contact", icon: "mail", color: "contact" },
+] as const;
+
+const [overview, experience, allProjects, about, contact] = shortcuts;
+const sidebarShortcuts = [overview, about, experience, allProjects, contact];
+
+type Section = (typeof shortcuts)[number]["screen"];
+type PortfolioEntry = (typeof projects)[number] | (typeof experiences)[number];
+
+const entriesBySection: Partial<Record<Section, readonly PortfolioEntry[]>> = {
+  Overview: [...experiences, ...projects],
+  Projects: projects,
+  Experience: experiences,
+};
 
 export default function Home() {
+  const [screen, setScreen] = useState<Section>("Overview");
+  const [mode, setMode] = useState<"Comfort" | "Sport">("Comfort");
+  const [clock, setClock] = useState("--:--");
+  const [selected, setSelected] = useState<PortfolioEntry | null>(null);
+  const dialogRef = useRef<HTMLDialogElement>(null);
+  const entries = entriesBySection[screen];
+
+  useEffect(() => {
+    const tick = () => setClock(new Intl.DateTimeFormat(undefined, {
+      hour: "2-digit", minute: "2-digit", hourCycle: "h23",
+    }).format(new Date()));
+    tick();
+    const timer = setInterval(tick, 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  useEffect(() => {
+    if (selected && !dialogRef.current?.open) dialogRef.current?.showModal();
+  }, [selected]);
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <main className="portfolio" data-mode={mode}>
+      <div className="console">
+        <header className="status-bar">
+          <div className="status-strip">
+            <time aria-label="Local time">{clock}</time>
+            <button className="display-toggle" aria-label="Sport display mode"
+              aria-pressed={mode === "Sport"}
+              onClick={() => setMode((current) => current === "Comfort" ? "Sport" : "Comfort")}>
+              <Icon name="sun" size={17} />
+              <span>{mode}</span>
+            </button>
+          </div>
+        </header>
+
+        <aside className="side-rail">
+          <strong className="identity">Your Name</strong>
+          <nav className="side-nav" aria-label="Portfolio sections">
+            {sidebarShortcuts.map((item) => (
+              <button key={item.screen} aria-current={screen === item.screen ? "page" : undefined}
+                onClick={() => setScreen(item.screen)}>
+                <Icon name={item.icon} size={21} />
+                <span>{item.screen}</span>
+              </button>
+            ))}
+          </nav>
+        </aside>
+
+        <div className="display-area">
+          <section key={screen} className="screen-content" aria-labelledby="screen-title">
+            <h1 id="screen-title">{screen}</h1>
+            {entries && (
+              <div className="app-grid">
+                {entries.map((entry) => (
+                  <button className="app-tile" key={entry.className} aria-haspopup="dialog"
+                    data-selected={selected === entry} onClick={() => setSelected(entry)}>
+                    <span className={`app-icon ${entry.className}`}><Icon name={entry.className} size={29} /></span>
+                    <strong>{entry.name}</strong>
+                  </button>
+                ))}
+                {screen === "Overview" && shortcuts.slice(1).map((item) => (
+                  <button className="app-tile" key={item.screen} onClick={() => setScreen(item.screen)}>
+                    <span className={`app-icon ${item.color}`}><Icon name={item.icon} size={28} /></span>
+                    <strong>{item.label}</strong>
+                  </button>
+                ))}
+              </div>
+            )}
+
+            {screen === "About" && (
+              <div className="text-panel">
+                <p>I’m a designer and developer who cares about how things look, how they work, and how they make people feel.</p>
+                <p>I work across interface design, design systems, and frontend development with React and Next.js.</p>
+              </div>
+            )}
+
+            {screen === "Contact" && (
+              <div className="text-panel">
+                <p>For projects and collaborations, get in touch by email.</p>
+                <a className="action" href="mailto:hello@example.com"><Icon name="mail" size={20} />hello@example.com</a>
+                <p className="fine-print">Sample address</p>
+              </div>
+            )}
+
+          </section>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+      </div>
+
+      <dialog ref={dialogRef} onClose={() => setSelected(null)} className="project-dialog" aria-labelledby="entry-title">
+        {selected && (
+          <div className="dialog-body">
+            <form method="dialog"><button className="close-button" autoFocus aria-label="Close details">×</button></form>
+            <span className={`app-icon ${selected.className}`}><Icon name={selected.className} size={28} /></span>
+            <p className="fine-print">
+              {"period" in selected ? `Sample experience · ${selected.period}` : `Sample project · ${selected.year}`}
+            </p>
+            <h2 id="entry-title">{selected.name}</h2>
+            <p>{selected.detail}</p>
+            <p className="fine-print">{selected.tags}</p>
+          </div>
+        )}
+      </dialog>
+    </main>
   );
 }
