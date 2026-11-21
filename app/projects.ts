@@ -17,7 +17,7 @@ export const projects: readonly Project[] = [
     githubUrl: "https://github.com/cheese-tart/NESulator",
     className: "nintendo",
     logo: { src: "/nintendo-wordmark.svg", width: 103, height: 26 },
-    detail: "Nintendo entertainment system emulator in C++, runs on Unreal Engine - emulates the 6502 instruction set in software.",
+    detail: "Nintendo Entertainment System emulator in C++, runs on Unreal Engine - emulates the 6502 instruction set in software.",
     tags: "C++ · Unreal Engine",
   },
   {
