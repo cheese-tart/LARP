@@ -25,6 +25,10 @@ const schoolProjectsTile = {
 type Section = "Home" | (typeof shortcuts)[number]["screen"] | typeof schoolProjectsTile.screen;
 type PortfolioEntry = (typeof projects)[number] | (typeof experiences)[number];
 
+function experienceLocation(entry: (typeof experiences)[number]) {
+  return entry.location?.trim() || "Location TBD";
+}
+
 function EntryIcon({ entry, size }: { entry: PortfolioEntry | typeof schoolProjectsTile; size: number }) {
   return (
     <span className={`app-icon ${entry.className}`}>
@@ -72,6 +76,11 @@ export default function Home() {
     : entriesBySection[screen];
   const activeSidebarScreen = screen === "School Projects" ? schoolProjectsOrigin : screen;
   const projectGitHubUrl = selected && "githubUrl" in selected ? selected.githubUrl : undefined;
+  const selectedExperience = selected && "period" in selected ? selected : undefined;
+  const jobTitle = selectedExperience?.jobTitle?.trim();
+  const experienceDetails = selectedExperience
+    ? [selectedExperience.period, experienceLocation(selectedExperience)].filter(Boolean).join(" · ")
+    : "";
 
   function showScrollbar(event: UIEvent<HTMLElement>) {
     const pane = event.currentTarget;
@@ -246,13 +255,13 @@ export default function Home() {
           <div className="dialog-body">
             <form method="dialog"><button className="close-button" autoFocus aria-label="Close details">×</button></form>
             <EntryIcon entry={selected} size={28} />
-            {"period" in selected && selected.period && (
-              <p className="fine-print">{selected.period}</p>
-            )}
+            {experienceDetails && <p className="fine-print">{experienceDetails}</p>}
             <h2 id="entry-title">
               <EntryTitle name={selected.name}
                 url={"companyUrl" in selected ? selected.companyUrl : projectGitHubUrl} />
             </h2>
+            {jobTitle && <p className="job-title">{jobTitle}</p>}
+            {jobTitle && selected.detail && <hr className="job-description-divider" />}
             {selected.detail && <p>{selected.detail}</p>}
             {selected.tags && <p className="fine-print">{selected.tags}</p>}
           </div>

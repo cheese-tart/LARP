@@ -442,6 +442,13 @@ button:focus-visible, a:focus-visible { outline: 2px solid #fff; outline-offset:
 .dialog-body { position: relative; padding: 26px; line-height: 1.65; }
 .dialog-body h2 { margin: 0; font-size: 30px; }
 .dialog-body > .app-icon + h2 { margin-block-start: 16px; }
+.job-title { margin-block: 2px 0; color: var(--accent); font-size: 0.875rem; }
+.job-description-divider {
+  height: 1px;
+  margin-block: 16px;
+  border: 0;
+  background: linear-gradient(to right, transparent, #547495 25% 75%, transparent);
+}
 .entry-title-link { color: inherit; text-decoration-thickness: 1px; text-underline-offset: .16em; }
 .entry-title-link:hover { color: var(--accent); }
 .fine-print { color: #becbe1; font-size: 13px; }
