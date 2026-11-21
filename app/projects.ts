@@ -1,29 +1,33 @@
-export const projects = [
+import type { ComponentProps } from "react";
+import type { Icon } from "./components/portfolio-icon";
+
+type Project = {
+  name: string;
+  detail: string;
+  tags: string;
+  githubUrl?: string;
+} & (
+  | { className: ComponentProps<typeof Icon>["name"]; logo?: never }
+  | { className: string; logo: { src: string; width: number; height: number } }
+);
+
+export const projects: readonly Project[] = [
   {
-    name: "Orbit",
-    type: "DIGITAL PRODUCT",
-    description: "A calmer way to navigate your finances.",
-    tags: "Product design · Frontend",
-    year: "2025",
-    className: "orbit",
-    detail: "An illustrative finance dashboard concept that brings spending, savings, and everyday decisions into one focused workspace. Built around clear hierarchy, thoughtful motion, and accessible interactions.",
+    name: "NESulator",
+    githubUrl: "https://github.com/cheese-tart/NESulator",
+    className: "nintendo",
+    logo: { src: "/nintendo-wordmark.svg", width: 103, height: 26 },
+    detail: "Nintendo entertainment system emulator in C++, runs on Unreal Engine - emulates the 6502 instruction set in software.",
+    tags: "C++ · Unreal Engine",
   },
-  {
-    name: "Forma",
-    type: "WEB EXPERIENCE",
-    description: "A new perspective on spaces.",
-    tags: "Art direction · Development",
-    year: "2025",
-    className: "forma",
-    detail: "An illustrative architecture studio experience exploring the relationship between space, typography, and movement. A restrained editorial system gives the work room to breathe.",
-  },
-  {
-    name: "Pulse",
-    type: "CREATIVE DEVELOPMENT",
-    description: "Sound you can see. Experiences you can feel.",
-    tags: "Interaction · Creative coding",
-    year: "2024",
-    className: "pulse",
-    detail: "An illustrative music discovery interface with expressive visual rhythms and a fluid browsing experience. An exploration of how a digital product can feel as distinctive as the music inside it.",
-  },
-] as const;
+];
+
+type SchoolProject = {
+  name: string;
+  detail?: string;
+  githubUrl: string;
+};
+
+export const schoolProjectsIntro = "Uninspired and soulless. Done for the sake of grades. Still a decent showcase of my technical skillset I guess.";
+
+export const schoolProjects: readonly SchoolProject[] = [];

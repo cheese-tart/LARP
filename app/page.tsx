@@ -1,9 +1,11 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
+import { useEffect, useRef, useState, type UIEvent } from "react";
 import { Icon } from "./components/portfolio-icon";
+import { SidebarScrollbar } from "./components/sidebar-scrollbar";
 import { experiences } from "./experiences";
-import { projects } from "./projects";
+import { projects, schoolProjects, schoolProjectsIntro } from "./projects";
 
 const shortcuts = [
   { screen: "Overview", label: "Overview", icon: "grid", color: "home" },
@@ -13,17 +15,43 @@ const shortcuts = [
   { screen: "Contact", label: "Contact", icon: "mail", color: "contact" },
 ] as const;
 
-type Section = "Home" | (typeof shortcuts)[number]["screen"];
+const schoolProjectsTile = {
+  screen: "School Projects",
+  label: "School Projects",
+  className: "ubc",
+  logo: { src: "/ubc-crest.png", width: 413, height: 563 },
+} as const;
+
+type Section = "Home" | (typeof shortcuts)[number]["screen"] | typeof schoolProjectsTile.screen;
 type PortfolioEntry = (typeof projects)[number] | (typeof experiences)[number];
+
+function EntryIcon({ entry, size }: { entry: PortfolioEntry | typeof schoolProjectsTile; size: number }) {
+  return (
+    <span className={`app-icon ${entry.className}`}>
+      {entry.logo
+        ? <Image className="entry-logo" {...entry.logo} alt="" unoptimized />
+        : <Icon name={entry.className} size={size} />}
+    </span>
+  );
+}
+
+function EntryTitle({ name, url }: { name: string; url?: string }) {
+  return url ? (
+    <a className="entry-title-link" href={url} target="_blank" rel="noopener noreferrer">{name}</a>
+  ) : name;
+}
 
 const entriesBySection: Partial<Record<Section, readonly PortfolioEntry[]>> = {
   Projects: projects,
   Experience: experiences,
 };
 
+const projectTiles = [...projects, schoolProjectsTile];
+
 const overviewTiles = [
   ...Object.values(entriesBySection).flat(),
   ...shortcuts.filter((item) => item.screen !== "Overview"),
+  schoolProjectsTile,
 ].sort((a, b) => {
   const firstLabel = "label" in a ? a.label : a.name;
   const secondLabel = "label" in b ? b.label : b.name;
@@ -32,11 +60,37 @@ const overviewTiles = [
 
 export default function Home() {
   const [screen, setScreen] = useState<Section>("Home");
+  const [schoolProjectsOrigin, setSchoolProjectsOrigin] = useState<"Overview" | "Projects">("Projects");
   const [mode, setMode] = useState<"Comfort" | "Sport">("Sport");
   const [clock, setClock] = useState({ digits: "--:--", period: "" });
   const [selected, setSelected] = useState<PortfolioEntry | null>(null);
   const dialogRef = useRef<HTMLDialogElement>(null);
-  const tiles = screen === "Overview" ? overviewTiles : entriesBySection[screen];
+  const sideNavRef = useRef<HTMLElement>(null);
+  const scrollbarTimers = useRef(new Map<HTMLElement, number>());
+  const tiles = screen === "Overview" ? overviewTiles
+    : screen === "Projects" ? projectTiles
+    : entriesBySection[screen];
+  const activeSidebarScreen = screen === "School Projects" ? schoolProjectsOrigin : screen;
+  const projectGitHubUrl = selected && "githubUrl" in selected ? selected.githubUrl : undefined;
+
+  function showScrollbar(event: UIEvent<HTMLElement>) {
+    const pane = event.currentTarget;
+    const timers = scrollbarTimers.current;
+    pane.setAttribute("data-scrolling", "");
+    window.clearTimeout(timers.get(pane));
+    timers.set(pane, window.setTimeout(() => {
+      pane.removeAttribute("data-scrolling");
+      timers.delete(pane);
+    }, 400));
+  }
+
+  useEffect(() => {
+    const timers = scrollbarTimers.current;
+    return () => {
+      timers.forEach((timer) => window.clearTimeout(timer));
+      timers.clear();
+    };
+  }, []);
 
   useEffect(() => {
     const formatter = new Intl.DateTimeFormat("en-US", {
@@ -89,24 +143,26 @@ export default function Home() {
 
         <aside className="side-rail">
           <strong className="identity">Your Name</strong>
-          <nav className="side-nav" aria-label="Portfolio sections">
+          <nav ref={sideNavRef} className="side-nav" aria-label="Portfolio sections" onScroll={showScrollbar}>
             <button aria-current={screen === "Home" ? "page" : undefined}
               onClick={() => setScreen("Home")}>
               <Icon name="home" size={21} />
               <span>Home</span>
             </button>
             {shortcuts.map((item) => (
-              <button key={item.screen} aria-current={screen === item.screen ? "page" : undefined}
+              <button key={item.screen} aria-current={activeSidebarScreen === item.screen ? "page" : undefined}
                 onClick={() => setScreen(item.screen)}>
                 <Icon name={item.icon} size={21} />
                 <span>{"sidebarLabel" in item ? item.sidebarLabel : item.label}</span>
               </button>
             ))}
+            <SidebarScrollbar paneRef={sideNavRef} />
           </nav>
         </aside>
 
         <div className="display-area">
-          <section key={screen} className="screen-content" aria-labelledby="screen-title">
+          <section key={screen} className="screen-content" aria-labelledby="screen-title"
+            tabIndex={0} onScroll={showScrollbar}>
             <h1 id="screen-title">{screen === "Home" ? "Hi" : screen}</h1>
             {screen === "Home" && (
               <div className="text-panel">
@@ -115,19 +171,46 @@ export default function Home() {
               </div>
             )}
             {tiles && (
-              <div className="app-grid">
+              <div className="app-grid" data-screen={screen}>
                 {tiles.map((item) => "screen" in item ? (
-                  <button className="app-tile" key={item.screen} onClick={() => setScreen(item.screen)}>
-                    <span className={`app-icon ${item.color}`}><Icon name={item.icon} size={28} /></span>
+                  <button className="app-tile" key={item.screen} onClick={() => {
+                    if (item.screen === "School Projects") {
+                      setSchoolProjectsOrigin(screen === "Overview" ? "Overview" : "Projects");
+                    }
+                    setScreen(item.screen);
+                  }}>
+                    {"logo" in item
+                      ? <EntryIcon entry={item} size={28} />
+                      : <span className={`app-icon ${item.color}`}><Icon name={item.icon} size={28} /></span>}
                     <strong>{item.label}</strong>
                   </button>
                 ) : (
                   <button className="app-tile" key={item.className} aria-haspopup="dialog"
                     data-selected={selected === item} onClick={() => setSelected(item)}>
-                    <span className={`app-icon ${item.className}`}><Icon name={item.className} size={29} /></span>
+                    <EntryIcon entry={item} size={29} />
                     <strong>{item.name}</strong>
                   </button>
                 ))}
+              </div>
+            )}
+
+            {screen === "School Projects" && (
+              <div className="text-panel">
+                <button className="project-back" type="button" aria-label={`Back to ${schoolProjectsOrigin}`}
+                  onClick={() => setScreen(schoolProjectsOrigin)}>
+                  <Icon name="back" size={20} />
+                </button>
+                {schoolProjectsIntro.trim() && <p className="school-project-intro">{schoolProjectsIntro}</p>}
+                {schoolProjects.length ? (
+                  <ul className="school-project-list" role="list">
+                    {schoolProjects.map((project) => (
+                      <li key={`${project.name}:${project.githubUrl}`}>
+                        <h2><EntryTitle name={project.name} url={project.githubUrl} /></h2>
+                        {project.detail && <p>{project.detail}</p>}
+                      </li>
+                    ))}
+                  </ul>
+                ) : <p>No school projects listed yet.</p>}
               </div>
             )}
 
@@ -162,13 +245,16 @@ export default function Home() {
         {selected && (
           <div className="dialog-body">
             <form method="dialog"><button className="close-button" autoFocus aria-label="Close details">×</button></form>
-            <span className={`app-icon ${selected.className}`}><Icon name={selected.className} size={28} /></span>
-            <p className="fine-print">
-              {"period" in selected ? `Sample experience · ${selected.period}` : `Sample project · ${selected.year}`}
-            </p>
-            <h2 id="entry-title">{selected.name}</h2>
-            <p>{selected.detail}</p>
-            <p className="fine-print">{selected.tags}</p>
+            <EntryIcon entry={selected} size={28} />
+            {"period" in selected && selected.period && (
+              <p className="fine-print">{selected.period}</p>
+            )}
+            <h2 id="entry-title">
+              <EntryTitle name={selected.name}
+                url={"companyUrl" in selected ? selected.companyUrl : projectGitHubUrl} />
+            </h2>
+            {selected.detail && <p>{selected.detail}</p>}
+            {selected.tags && <p className="fine-print">{selected.tags}</p>}
           </div>
         )}
       </dialog>

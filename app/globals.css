@@ -1,3 +1,9 @@
+@property --scrollbar-thumb {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+
 :root {
   color-scheme: dark;
   font-weight: 400;
@@ -23,16 +29,15 @@ button:focus-visible, a:focus-visible { outline: 2px solid #fff; outline-offset:
 .portfolio {
   --accent: #a2bad7;
   --screen-top: #1a1d24;
-  --status-surface: #262d38;
+  --sport-screen-top: #070d1a;
   --rail-selected: #f0b29b;
 }
 .portfolio[data-mode="Sport"] {
   --accent: #92c5ee;
-  --screen-top: #151b25;
-  --status-surface: #232e40;
+  --screen-top: var(--sport-screen-top);
   --rail-selected: #79c7ff;
   --sport-tile-red: #e31627;
-  --identity-color: var(--sport-tile-red);
+  --mode-accent: var(--sport-tile-red);
 }
 
 .console {
@@ -41,10 +46,13 @@ button:focus-visible, a:focus-visible { outline: 2px solid #fff; outline-offset:
   display: grid;
   grid-template:
     "rail status" auto
-    "rail display" 1fr
+    "rail display" minmax(0, 1fr)
     "bottom bottom" var(--bottom-bar-height) / var(--rail-width) minmax(0, 1fr);
   min-height: 100dvh;
   background: #060a13;
+}
+.bottom-bar, .status-strip {
+  backdrop-filter: blur(12px);
 }
 .bottom-bar {
   grid-area: bottom;
@@ -55,8 +63,7 @@ button:focus-visible, a:focus-visible { outline: 2px solid #fff; outline-offset:
   justify-content: center;
   padding-bottom: env(safe-area-inset-bottom);
   border-top: 1px solid #ffffff26;
-  background: linear-gradient(to bottom, color-mix(in srgb, var(--status-surface) 65%, transparent), #090e18a6);
-  backdrop-filter: blur(12px);
+  background: #000a;
   box-shadow: 0 -4px 16px #0005;
 }
 .bottom-home {
@@ -78,7 +85,13 @@ button:focus-visible, a:focus-visible { outline: 2px solid #fff; outline-offset:
   align-items: flex-start;
   justify-content: flex-end;
   min-height: 64px;
-  background: var(--screen-top);
+  background-color: var(--screen-top);
+  background-image: radial-gradient(
+    ellipse min(100%, 400px) 60px at top right,
+    color-mix(in srgb, var(--accent) 18%, transparent),
+    transparent
+  );
+  transition: background-color 300ms ease;
 }
 .identity {
   display: grid;
@@ -90,7 +103,7 @@ button:focus-visible, a:focus-visible { outline: 2px solid #fff; outline-offset:
   font-size: 16px;
   font-weight: 500;
   letter-spacing: -.015em;
-  color: var(--identity-color, var(--rail-selected));
+  color: var(--mode-accent, var(--rail-selected));
   transition: color 300ms ease, background-color 300ms ease;
 }
 .status-strip {
@@ -99,11 +112,10 @@ button:focus-visible, a:focus-visible { outline: 2px solid #fff; outline-offset:
   align-items: center;
   gap: 12px;
   padding-inline-start: calc(var(--status-bevel) + 6px);
-  background: var(--status-surface);
+  background: #0005;
   clip-path: polygon(0 0, 100% 0, 100% 100%, var(--status-bevel) 100%);
   white-space: nowrap;
 }
-.status-bar, .status-strip { transition: background-color 300ms ease; }
 .status-links { display: flex; align-items: center; }
 .status-icon {
   display: grid;
@@ -129,7 +141,11 @@ button:focus-visible, a:focus-visible { outline: 2px solid #fff; outline-offset:
   font-size: 13px;
 }
 .display-toggle:hover { background: #ffffff20; }
-.display-toggle span { min-width: 8ch; text-align: left; }
+.display-toggle span {
+  min-width: 8ch;
+  color: var(--mode-accent, var(--rail-selected));
+  text-align: left;
+}
 .status-clock {
   font-family: var(--font-clock, sans-serif);
   font-size: 20px;
@@ -150,12 +166,16 @@ button:focus-visible, a:focus-visible { outline: 2px solid #fff; outline-offset:
     linear-gradient(to bottom, #1a1d24 12%, #252e3c 62%, #2e4663);
 }
 .side-rail {
+  --sport-rail-light: #273349;
+  --sport-rail-mid: #202b3e;
+  --sport-rail-dark: #192233;
   grid-area: rail;
   display: flex;
   flex-direction: column;
   background: linear-gradient(155deg, #0c1524, #070e1a 72%);
 }
 .side-nav { display: flex; flex-direction: column; }
+.sidebar-scrollbar { display: none; }
 .display-area, .side-rail {
   position: relative;
   isolation: isolate;
@@ -171,16 +191,71 @@ button:focus-visible, a:focus-visible { outline: 2px solid #fff; outline-offset:
 }
 .display-area::before {
   background:
-    radial-gradient(ellipse at 52% 110%, #4d91c7c2, transparent 61%),
-    linear-gradient(to bottom, #151b25 12%, #1d2b41 62%, #294b71);
+    radial-gradient(ellipse 72% 76% at 52% 104%, #2c61a78f, transparent),
+    linear-gradient(to bottom, var(--sport-screen-top), #091329 52%, #10254a 82%, #132c55);
 }
 .portfolio[data-mode="Sport"] :is(.display-area, .side-rail, .side-nav)::before { opacity: 1; }
 @media (width > 680px) {
+  .console { height: 100dvh; }
+  .side-nav, .screen-content {
+    overflow-y: auto;
+    overscroll-behavior-y: contain;
+  }
+  .side-nav { scrollbar-width: none; }
+  .side-nav::-webkit-scrollbar { display: none; }
+  .side-nav > button { transform-origin: right center; }
+  .sidebar-scrollbar {
+    display: block;
+    position: absolute;
+    inset-inline-end: 0;
+    z-index: 1;
+    width: 4px;
+    height: 0;
+    background: #fff;
+    opacity: 0;
+    pointer-events: none;
+    touch-action: none;
+    transition: opacity 250ms ease-out;
+  }
+  .side-nav[data-scrolling] .sidebar-scrollbar,
+  .sidebar-scrollbar[data-dragging] {
+    opacity: 1;
+    pointer-events: auto;
+    transition: none;
+  }
+  .screen-content {
+    --scrollbar-thumb: transparent;
+    height: 100%;
+    scrollbar-width: thin;
+    scrollbar-color: var(--scrollbar-thumb) transparent;
+    transition: --scrollbar-thumb 250ms ease-out;
+  }
+  .screen-content[data-scrolling] {
+    --scrollbar-thumb: #fff;
+    transition: none;
+  }
+  @supports selector(::-webkit-scrollbar) {
+    .screen-content {
+      scrollbar-width: auto;
+      scrollbar-color: auto;
+    }
+    .screen-content::-webkit-scrollbar {
+      width: 4px;
+      height: 4px;
+      background: transparent;
+    }
+    .screen-content::-webkit-scrollbar-thumb {
+      background: var(--scrollbar-thumb);
+      border-radius: 0;
+    }
+  }
   .side-rail {
     /* Offset the stops to account for the triangular ends of a 45° gradient. */
     --diagonal-offset: calc(var(--rail-width) * .11785113);
     --first-band-end: calc(100% / 3 + var(--diagonal-offset));
     --second-band-end: calc(100% * 2 / 3 - var(--diagonal-offset));
+    border-inline-end: 1px solid transparent;
+    border-image: linear-gradient(to bottom, #141d29 8%, #3c4c60 58%, #8092a6) 1;
     background: linear-gradient(
       45deg,
       #202a3a var(--first-band-end),
@@ -191,9 +266,9 @@ button:focus-visible, a:focus-visible { outline: 2px solid #fff; outline-offset:
   .side-rail::before {
     background: linear-gradient(
       45deg,
-      #2b384d var(--first-band-end),
-      #232f43 var(--first-band-end) var(--second-band-end),
-      #1c2535 var(--second-band-end)
+      var(--sport-rail-light) var(--first-band-end),
+      var(--sport-rail-mid) var(--first-band-end) var(--second-band-end),
+      var(--sport-rail-dark) var(--second-band-end)
     );
   }
 }
@@ -227,10 +302,12 @@ button:focus-visible, a:focus-visible { outline: 2px solid #fff; outline-offset:
 }
 .app-grid {
   --tile-size: 136px;
+  --tile-gap: clamp(20px, 5vw, 28px);
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(0, min(100%, var(--tile-size))));
   grid-auto-rows: 1fr;
-  gap: 16px;
+  gap: var(--tile-gap);
+  margin-block-start: calc(var(--tile-gap) / 2 + 8px);
 }
 .app-tile {
   position: relative;
@@ -249,7 +326,7 @@ button:focus-visible, a:focus-visible { outline: 2px solid #fff; outline-offset:
 .app-tile::before {
   content: "";
   position: absolute;
-  inset: 0;
+  inset: calc((4px - var(--tile-gap)) / 2);
   z-index: -1;
   pointer-events: none;
   background: linear-gradient(to bottom, #48405a, #785364 61%, #b77c78 82%, #eec49f);
@@ -264,8 +341,8 @@ button:focus-visible, a:focus-visible { outline: 2px solid #fff; outline-offset:
 }
 .portfolio[data-mode="Sport"] .app-tile::before {
   background:
-    repeating-linear-gradient(135deg, #cfddff36 0 1px, transparent 2px 5px),
-    linear-gradient(to bottom, #142e5a, #291f43 49%, #8a142a 77%, var(--sport-tile-red));
+    repeating-linear-gradient(135deg, #a8c6ff17 0 1px, transparent 2px 5px),
+    linear-gradient(to bottom, #0b1426, #271c36 49%, #8a142a 77%, var(--sport-tile-red));
   background-repeat: no-repeat;
   background-clip: padding-box;
 }
@@ -285,48 +362,44 @@ button:focus-visible, a:focus-visible { outline: 2px solid #fff; outline-offset:
   box-shadow: 0 2px 5px #0005;
 }
 .app-grid .app-icon {
+  width: 72px;
+  height: 72px;
   color: #fff;
+}
+.portfolio[data-mode="Sport"] .app-grid[data-screen="Overview"] .app-icon:not(.nintendo) {
+  border-image: linear-gradient(135deg, #d8ecff, #7598bd 48%, #20334e) 1;
 }
 .icon-tone { fill: currentColor; fill-opacity: .24; }
 .app-grid .app-icon svg {
-  width: 34px;
-  height: 34px;
+  width: 44px;
+  height: 44px;
   stroke-width: 1.65;
   filter: drop-shadow(0 1px 2px #031529b3);
 }
-.app-icon.orbit {
-  --icon-facets: linear-gradient(45deg, #080f2724 28%, transparent 30% 59%, #ffffff1c 61%);
-}
-.app-icon.forma {
-  --icon-light: #e78743;
-  --icon-dark: #8c3748;
-  --icon-facets: linear-gradient(45deg, #080f2726 62%, #ffffff15 64%);
-}
-.app-icon.pulse {
-  --icon-light: #e845a4;
-  --icon-dark: #76246e;
-  --icon-facets: linear-gradient(135deg, #ffffff1e 18%, transparent 20% 47%, #080f2728 49% 72%, #ffffff10 74%);
-}
+.app-icon.nintendo { background: #e60012; }
+.app-icon.ubc { background: #fff; }
 .app-icon:is(.experience, .projects, .profile, .contact) {
   background:
     linear-gradient(45deg, #ffffff1c 38%, transparent 40%),
     linear-gradient(to bottom, #0c9ee4, #175578 52%, #04c5a4);
 }
-.app-icon.frontend {
-  --icon-light: #199bea;
-  --icon-dark: #114d8d;
-  --icon-facets: linear-gradient(45deg, #080f272d 39%, transparent 41% 68%, #ffffff20 70%);
+.app-icon.rbc {
+  --icon-light: #284970;
+  --icon-dark: #102137;
 }
-.app-icon.design {
-  --icon-light: #b563ee;
-  --icon-dark: #612b97;
-  --icon-facets: linear-gradient(45deg, #080f2729 22%, #ffffff14 24% 44%, transparent 46% 71%, #ffffff20 73%);
+.app-icon:is(.rbc, .ubc) { position: relative; }
+.app-icon .entry-logo {
+  width: 86%;
+  height: 76%;
+  object-fit: contain;
 }
-.app-icon.web {
-  --icon-light: #10ae8b;
-  --icon-dark: #106561;
-  --icon-facets: linear-gradient(135deg, #ffffff1b 41%, #080f2723 43%);
+.app-icon:is(.rbc, .ubc) .entry-logo {
+  position: absolute;
+  inset: 0;
+  margin: auto;
 }
+.app-icon.rbc .entry-logo { transform: translateY(-1px); }
+.app-icon.ubc .entry-logo { transform: translateY(1px); }
 .portfolio[data-mode="Comfort"] .app-tile .app-icon { border-color: transparent; }
 
 .text-panel {
@@ -337,6 +410,22 @@ button:focus-visible, a:focus-visible { outline: 2px solid #fff; outline-offset:
 .text-panel p:first-child, .text-panel h2 { margin-top: 0; }
 .action { display: inline-flex; gap: 9px; color: var(--accent); }
 .action:hover { color: #fff; }
+.project-back {
+  display: inline-grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 0;
+  padding: 0;
+  color: var(--mode-accent, var(--rail-selected));
+  background: transparent;
+}
+.project-back:hover { background-color: #ffffff12; }
+.school-project-intro { margin: 8px 0 16px; white-space: pre-wrap; overflow-wrap: anywhere; }
+.school-project-list { list-style: none; margin: 12px 0 0; padding: 0; }
+.school-project-list li { border-block-end: 1px solid #ffffff26; padding-block: 12px; }
+.school-project-list h2 { margin: 0; font-size: 16px; }
+.school-project-list p { margin: 6px 0 0; }
 .project-dialog {
   width: min(540px, calc(100% - 32px));
   padding: 0;
@@ -352,6 +441,9 @@ button:focus-visible, a:focus-visible { outline: 2px solid #fff; outline-offset:
 }
 .dialog-body { position: relative; padding: 26px; line-height: 1.65; }
 .dialog-body h2 { margin: 0; font-size: 30px; }
+.dialog-body > .app-icon + h2 { margin-block-start: 16px; }
+.entry-title-link { color: inherit; text-decoration-thickness: 1px; text-underline-offset: .16em; }
+.entry-title-link:hover { color: var(--accent); }
 .fine-print { color: #becbe1; font-size: 13px; }
 .close-button {
   position: absolute;
@@ -394,7 +486,7 @@ button:focus-visible, a:focus-visible { outline: 2px solid #fff; outline-offset:
     grid-template-columns: repeat(6, minmax(0, 1fr));
     background: linear-gradient(155deg, #0c1524, #070e1a 72%);
   }
-  .side-nav::before { background: linear-gradient(155deg, #263248, #172337 72%); }
+  .side-nav::before { background: linear-gradient(155deg, var(--sport-rail-light), var(--sport-rail-dark) 72%); }
   .side-rail button { min-height: 64px; padding-inline: 2px; font-size: 12px; }
   .screen-content { padding: 24px 14px 30px; }
   .app-tile { font-size: 14px; }
@@ -402,7 +494,8 @@ button:focus-visible, a:focus-visible { outline: 2px solid #fff; outline-offset:
 
 @media (prefers-reduced-motion: reduce) {
   .portfolio :is(button, .action),
-  .status-bar, .status-strip, .identity, .screen-content h1,
+  .status-bar, .identity, .screen-content h1,
+  .sidebar-scrollbar, .screen-content,
   .display-area::before, .side-rail::before, .side-nav::before,
   .app-tile::before { transition: none; }
   .portfolio :is(button, .action):active { transform: none; }
