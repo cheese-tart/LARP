@@ -20,6 +20,14 @@ export const projects: readonly Project[] = [
     detail: "Nintendo entertainment system emulator in C++, runs on Unreal Engine - emulates the 6502 instruction set in software.",
     tags: "C++ · Unreal Engine",
   },
+  {
+    name: "Spam or Ham?",
+    githubUrl: "",
+    className: "spam-or-ham",
+    logo: { src: "/spam-or-ham.png", width: 216, height: 216 },
+    detail: "",
+    tags: "",
+  }
 ];
 
 type SchoolProject = {
@@ -28,6 +36,6 @@ type SchoolProject = {
   githubUrl: string;
 };
 
-export const schoolProjectsIntro = "Uninspired and soulless. Done for the sake of grades. Still a decent showcase of my technical skillset I guess.";
+export const schoolProjectsIntro = "Uninspired and soulless. Done for the sake of grades. Still a decent showcase of my skills I guess.";
 
 export const schoolProjects: readonly SchoolProject[] = [];

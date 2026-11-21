@@ -12,6 +12,17 @@ type Experience = {
 
 export const experiences: readonly Experience[] = [
   {
+    name: "Girls Who LEAP",
+    jobTitle: "Mobile App Developer",
+    companyUrl: "https://www.girlswholeap.com/",
+    period: "Summer 2026",
+    location: "Vancouver, BC",
+    className: "girls-who-leap",
+    logo: { src: "/girls-who-leap-logo.svg", width: 244, height: 206 },
+    detail: "Portable communication platform.",
+    tags: "TypeScript, Supabase, React Native, PostgreSQL",
+  },
+  {
     name: "RBC",
     jobTitle: "Software Engineer Intern",
     companyUrl: "https://www.rbc.com/",

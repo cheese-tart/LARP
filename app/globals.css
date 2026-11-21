@@ -48,7 +48,7 @@ button:focus-visible, a:focus-visible { outline: 2px solid #fff; outline-offset:
     "rail status" auto
     "rail display" minmax(0, 1fr)
     "bottom bottom" var(--bottom-bar-height) / var(--rail-width) minmax(0, 1fr);
-  min-height: 100dvh;
+  height: 100dvh;
   background: #060a13;
 }
 .bottom-bar, .status-strip {
@@ -100,8 +100,9 @@ button:focus-visible, a:focus-visible { outline: 2px solid #fff; outline-offset:
   padding: 10px 8px;
   text-align: center;
   overflow-wrap: anywhere;
-  font-size: 16px;
+  font-size: 44px;
   font-weight: 500;
+  line-height: 1;
   letter-spacing: -.015em;
   color: var(--mode-accent, var(--rail-selected));
   transition: color 300ms ease, background-color 300ms ease;
@@ -194,14 +195,42 @@ button:focus-visible, a:focus-visible { outline: 2px solid #fff; outline-offset:
     radial-gradient(ellipse 72% 76% at 52% 104%, #2c61a78f, transparent),
     linear-gradient(to bottom, var(--sport-screen-top), #091329 52%, #10254a 82%, #132c55);
 }
+.home-backdrop {
+  position: absolute;
+  inset-block-end: 0;
+  inset-inline-end: 0;
+  width: min(66%, 74dvh);
+  height: 100%;
+  object-fit: cover;
+  object-position: right center;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 800ms ease-out, visibility 800ms;
+  filter: brightness(.74) sepia(1) saturate(1.4) hue-rotate(-15deg);
+  mask-image:
+    linear-gradient(to right, transparent, #000 63%),
+    linear-gradient(to bottom, transparent, #000 12%, #000 88%, transparent);
+  mask-composite: intersect;
+}
+.home-backdrop[data-visible] {
+  opacity: .55;
+  visibility: visible;
+}
+@starting-style {
+  .home-backdrop[data-visible] { opacity: 0; }
+}
+.portfolio[data-mode="Sport"] .home-backdrop {
+  filter: brightness(.74) sepia(1) saturate(1.65) hue-rotate(174deg);
+}
 .portfolio[data-mode="Sport"] :is(.display-area, .side-rail, .side-nav)::before { opacity: 1; }
 @media (width > 680px) {
-  .console { height: 100dvh; }
-  .side-nav, .screen-content {
+  .side-nav {
     overflow-y: auto;
     overscroll-behavior-y: contain;
+    scrollbar-width: none;
   }
-  .side-nav { scrollbar-width: none; }
   .side-nav::-webkit-scrollbar { display: none; }
   .side-nav > button { transform-origin: right center; }
   .sidebar-scrollbar {
@@ -222,32 +251,6 @@ button:focus-visible, a:focus-visible { outline: 2px solid #fff; outline-offset:
     opacity: 1;
     pointer-events: auto;
     transition: none;
-  }
-  .screen-content {
-    --scrollbar-thumb: transparent;
-    height: 100%;
-    scrollbar-width: thin;
-    scrollbar-color: var(--scrollbar-thumb) transparent;
-    transition: --scrollbar-thumb 250ms ease-out;
-  }
-  .screen-content[data-scrolling] {
-    --scrollbar-thumb: #fff;
-    transition: none;
-  }
-  @supports selector(::-webkit-scrollbar) {
-    .screen-content {
-      scrollbar-width: auto;
-      scrollbar-color: auto;
-    }
-    .screen-content::-webkit-scrollbar {
-      width: 4px;
-      height: 4px;
-      background: transparent;
-    }
-    .screen-content::-webkit-scrollbar-thumb {
-      background: var(--scrollbar-thumb);
-      border-radius: 0;
-    }
   }
   .side-rail {
     /* Offset the stops to account for the triangular ends of a 45° gradient. */
@@ -287,9 +290,35 @@ button:focus-visible, a:focus-visible { outline: 2px solid #fff; outline-offset:
 .side-rail button:hover { background: #a1b3cc1c; }
 .side-rail button[aria-current] { color: var(--rail-selected); }
 .screen-content {
+  --scrollbar-thumb: transparent;
+  height: 100%;
   min-width: 0;
+  overflow-y: auto;
+  overscroll-behavior-y: contain;
   padding: 27px clamp(20px, 4vw, 52px) 42px;
   animation: panel-in 200ms ease-out;
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-thumb) transparent;
+  transition: --scrollbar-thumb 250ms ease-out;
+}
+.screen-content[data-scrolling] {
+  --scrollbar-thumb: #fff;
+  transition: none;
+}
+@supports selector(::-webkit-scrollbar) {
+  .screen-content {
+    scrollbar-width: auto;
+    scrollbar-color: auto;
+  }
+  .screen-content::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+    background: transparent;
+  }
+  .screen-content::-webkit-scrollbar-thumb {
+    background: var(--scrollbar-thumb);
+    border-radius: 0;
+  }
 }
 .screen-content h1 {
   margin: 0;
@@ -299,6 +328,50 @@ button:focus-visible, a:focus-visible { outline: 2px solid #fff; outline-offset:
   letter-spacing: .035em;
   color: var(--accent);
   transition: color 300ms ease;
+}
+.home-intro {
+  --intro-bevel: clamp(12px, 3vw, 40px);
+  --intro-accent: var(--mode-accent, var(--rail-selected));
+  position: relative;
+  isolation: isolate;
+  max-width: 84rem;
+  margin-block-start: clamp(8px, 6vh, 64px);
+  padding: clamp(28px, 6vw, 64px) calc(var(--intro-bevel) + clamp(10px, 2vw, 26px));
+}
+.home-intro::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  clip-path: polygon(0 0, calc(100% - var(--intro-bevel)) 0, 100% 100%, var(--intro-bevel) 100%);
+  border-block-start: 2px solid var(--intro-accent);
+  background:
+    linear-gradient(125deg, color-mix(in srgb, var(--intro-accent) 17%, transparent), transparent 55%),
+    #060a13a6;
+  transition: border-color 300ms ease;
+}
+.home-intro h1 {
+  color: inherit;
+  font-size: clamp(2.25rem, 7.25vw, 5.5rem);
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -.045em;
+  text-transform: none;
+  text-wrap: balance;
+}
+.home-role, .home-aside {
+  margin: 0;
+  max-width: 46ch;
+}
+.home-role {
+  margin-block-start: 1rem;
+  color: var(--rail-selected);
+  font-size: clamp(1.125rem, 2.4vw, 1.5rem);
+  transition: color 300ms ease;
+}
+.home-aside {
+  margin-block-start: .75rem;
+  font-size: clamp(1.0625rem, 1.9vw, 1.25rem);
 }
 .app-grid {
   --tile-size: 136px;
@@ -366,9 +439,10 @@ button:focus-visible, a:focus-visible { outline: 2px solid #fff; outline-offset:
   height: 72px;
   color: #fff;
 }
-.portfolio[data-mode="Sport"] .app-grid[data-screen="Overview"] .app-icon:not(.nintendo) {
+.portfolio[data-mode="Sport"] .app-grid[data-screen="Overview"] .app-icon:not(.nintendo, .spam-or-ham) {
   border-image: linear-gradient(135deg, #d8ecff, #7598bd 48%, #20334e) 1;
 }
+.app-grid .app-icon.spam-or-ham { border: 0; }
 .icon-tone { fill: currentColor; fill-opacity: .24; }
 .app-grid .app-icon svg {
   width: 44px;
@@ -378,6 +452,10 @@ button:focus-visible, a:focus-visible { outline: 2px solid #fff; outline-offset:
 }
 .app-icon.nintendo { background: #e60012; }
 .app-icon.ubc { background: #fff; }
+.app-icon.girls-who-leap { background: #000; }
+.app-grid[data-screen="Experience"] .app-icon.girls-who-leap {
+  border-color: transparent;
+}
 .app-icon:is(.experience, .projects, .profile, .contact) {
   background:
     linear-gradient(45deg, #ffffff1c 38%, transparent 40%),
@@ -387,19 +465,27 @@ button:focus-visible, a:focus-visible { outline: 2px solid #fff; outline-offset:
   --icon-light: #284970;
   --icon-dark: #102137;
 }
-.app-icon:is(.rbc, .ubc) { position: relative; }
+.app-icon:is(.rbc, .ubc, .girls-who-leap, .spam-or-ham) { position: relative; }
 .app-icon .entry-logo {
   width: 86%;
   height: 76%;
   object-fit: contain;
 }
-.app-icon:is(.rbc, .ubc) .entry-logo {
+.app-icon:is(.rbc, .ubc, .girls-who-leap, .spam-or-ham) .entry-logo {
   position: absolute;
   inset: 0;
   margin: auto;
 }
+.app-icon.spam-or-ham { overflow: hidden; }
+.app-icon.spam-or-ham .entry-logo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scale(1.25);
+}
 .app-icon.rbc .entry-logo { transform: translateY(-1px); }
 .app-icon.ubc .entry-logo { transform: translateY(1px); }
+.app-icon.girls-who-leap .entry-logo { transform: translate(3%, -4%); }
 .portfolio[data-mode="Comfort"] .app-tile .app-icon { border-color: transparent; }
 
 .text-panel {
@@ -449,8 +535,8 @@ button:focus-visible, a:focus-visible { outline: 2px solid #fff; outline-offset:
   border: 0;
   background: linear-gradient(to right, transparent, #547495 25% 75%, transparent);
 }
-.entry-title-link { color: inherit; text-decoration-thickness: 1px; text-underline-offset: .16em; }
-.entry-title-link:hover { color: var(--accent); }
+.entry-title-link, .home-role a { color: inherit; text-decoration-thickness: 1px; text-underline-offset: .16em; }
+.entry-title-link:hover, .home-role a:hover { color: var(--accent); }
 .fine-print { color: #becbe1; font-size: 13px; }
 .close-button {
   position: absolute;
@@ -469,13 +555,20 @@ button:focus-visible, a:focus-visible { outline: 2px solid #fff; outline-offset:
     grid-template:
       "name status" auto
       "nav nav" auto
-      "display display" 1fr
+      "display display" minmax(0, 1fr)
       "bottom bottom" var(--bottom-bar-height) / minmax(0, 1fr) auto;
   }
   .status-strip { --status-bevel: 22px; gap: 6px; }
   .status-icon { width: 30px; }
   .status-clock { font-size: 17px; }
   .display-toggle { padding-inline: 6px; }
+  .home-backdrop {
+    width: min(86%, 46dvh);
+    height: 64%;
+    mask-image:
+      linear-gradient(to right, transparent, #000 32%),
+      linear-gradient(to bottom, transparent, #000 24%, #000 86%, transparent);
+  }
   .side-rail { display: contents; }
   .side-rail::before { content: none; }
   .identity {
@@ -501,8 +594,8 @@ button:focus-visible, a:focus-visible { outline: 2px solid #fff; outline-offset:
 
 @media (prefers-reduced-motion: reduce) {
   .portfolio :is(button, .action),
-  .status-bar, .identity, .screen-content h1,
-  .sidebar-scrollbar, .screen-content,
+  .status-bar, .identity, .screen-content h1, .home-intro::before, .home-role,
+  .sidebar-scrollbar, .screen-content, .home-backdrop,
   .display-area::before, .side-rail::before, .side-nav::before,
   .app-tile::before { transition: none; }
   .portfolio :is(button, .action):active { transform: none; }

@@ -47,10 +47,10 @@ function EntryTitle({ name, url }: { name: string; url?: string }) {
 
 const entriesBySection: Partial<Record<Section, readonly PortfolioEntry[]>> = {
   Projects: projects,
-  Experience: experiences,
+  Experience: [...experiences].reverse(),
 };
 
-const projectTiles = [...projects, schoolProjectsTile];
+const projectTiles = [...[...projects].reverse(), schoolProjectsTile];
 
 const overviewTiles = [
   ...Object.values(entriesBySection).flat(),
@@ -127,13 +127,20 @@ export default function Home() {
         <header className="status-bar">
           <div className="status-strip">
             <div className="status-links">
-              <a className="status-icon" href="https://github.com/cheese-tart/my-app"
+              <a className="status-icon" href="https://github.com/cheese-tart/"
+                target="_blank" rel="noopener noreferrer"
                 aria-label="GitHub repository" title="GitHub repository">
                 <Icon name="github" size={17} />
               </a>
-              <button className="status-icon" type="button" aria-label="LinkedIn" disabled>
+              <a
+                className="status-icon"
+                href="https://www.linkedin.com/in/wong-chester/"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="LinkedIn"
+              >
                 <Icon name="linkedin" size={17} />
-              </button>
+              </a>
               <button className="status-icon" type="button" aria-label="Résumé" disabled>
                 <Icon name="resume" size={17} />
               </button>
@@ -151,7 +158,7 @@ export default function Home() {
         </header>
 
         <aside className="side-rail">
-          <strong className="identity">Your Name</strong>
+          <strong className="identity" lang="zh-Hant">黃</strong>
           <nav ref={sideNavRef} className="side-nav" aria-label="Portfolio sections" onScroll={showScrollbar}>
             <button aria-current={screen === "Home" ? "page" : undefined}
               onClick={() => setScreen("Home")}>
@@ -170,14 +177,28 @@ export default function Home() {
         </aside>
 
         <div className="display-area">
+          <Image
+            className="home-backdrop"
+            data-visible={screen === "Home" ? "" : undefined}
+            src="/manga-panel.jpg"
+            width={736}
+            height={1109}
+            alt=""
+            unoptimized
+          />
           <section key={screen} className="screen-content" aria-labelledby="screen-title"
             tabIndex={0} onScroll={showScrollbar}>
-            <h1 id="screen-title">{screen === "Home" ? "Hi" : screen}</h1>
-            {screen === "Home" && (
-              <div className="text-panel">
-                <p>Welcome to my little corner of the internet. This is a place for ideas, experiments, and the things I’m making along the way.</p>
-                <p>Some days are spent sketching something new, others are spent turning small details into something useful. Have a look around and see what catches your eye.</p>
+            {screen === "Home" ? (
+              <div className="home-intro">
+                <h1 id="screen-title">Chester Wong</h1>
+                <p className="home-role">
+                  <a href="https://www.ubc.ca/" target="_blank" rel="noopener noreferrer">UBC</a>
+                  {" computer science student · Incoming software engineer intern @ RBC"}
+                </p>
+                <p className="home-aside">Huge (only figuratively{'\u{1F61E}'}) gym fanatic and avid car nerd.</p>
               </div>
+            ) : (
+              <h1 id="screen-title">{screen}</h1>
             )}
             {tiles && (
               <div className="app-grid" data-screen={screen}>
@@ -225,16 +246,14 @@ export default function Home() {
 
             {screen === "About" && (
               <div className="text-panel">
-                <p>I’m a designer and developer who cares about how things look, how they work, and how they make people feel.</p>
-                <p>I work across interface design, design systems, and frontend development with React and Next.js.</p>
+                <p></p>
               </div>
             )}
 
             {screen === "Contact" && (
               <div className="text-panel">
-                <p>For projects and collaborations, get in touch by email.</p>
-                <a className="action" href="mailto:hello@example.com"><Icon name="mail" size={20} />hello@example.com</a>
-                <p className="fine-print">Sample address</p>
+                <p>Feel free to reach out via email or linkedin!</p>
+                <a className="action" href="mailto:w.chester@outlook.com"><Icon name="mail" size={20} />w.chester@outlook.com</a>
               </div>
             )}
 

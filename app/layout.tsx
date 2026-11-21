@@ -16,9 +16,7 @@ const dinClock = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Your Name — Design & Development",
-  description:
-    "A personal portfolio exploring thoughtful design and precise development. An automotive-inspired digital experience.",
+  title: "chester",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

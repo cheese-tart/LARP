@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="173 192 244 206" fill="#fff">
+  <title>Girls Who LEAP</title>
+  <g transform="matrix(1 -.2 -.012 1 211 226)" fill-rule="evenodd">
+    <path d="M3 0h12v8h-4V4H4v20h7v-7H8v-4h7v15H3q-3 0-3-3V3q0-3 3-3Z"/>
+    <path d="M26 4h4v8h8v4h-8v8h-4v-8h-8v-4h8Z"/>
+    <path d="M41 0h12q3 0 3 3v9q0 2-2 3l2 2v11h-4V17h-7v11h-4Zm4 4v9h7V4Z"/>
+    <path d="M60 0h4v24h10v4H60Z"/>
+    <path d="M80 0h12v8h-4V4h-7v8h8q3 0 3 3v10q0 3-3 3H77v-8h4v4h7v-8h-8q-3 0-3-3V3q0-3 3-3Z"/>
+    <path d="M105 0h5v24h6V0h5v24h5V0h5v28h-26Z"/>
+    <path d="M136 0h4v12h7V0h4v28h-4V16h-7v12h-4Z"/>
+    <path d="M158 0h12v28h-12q-3 0-3-3V3q0-3 3-3Zm1 4v20h7V4Z"/>
+  </g>
+  <g fill-rule="evenodd">
+    <path d="m177 250 21-4-2 130 138-28v18l-160 32-1-1Z"/>
+    <path d="m211 264 55-11v17l-35 8-1 23 28-6v17l-28 6-1 22 35-7v17l-56 11Z"/>
+    <path d="m286 249 41-8q10-2 10 8l-2 86-21 5v-29l-17 3-1 29-21 4 2-88q0-8 9-10Zm12 16-1 33 17-4 1-33Z"/>
+    <path d="m348 237 42-9q11-2 11 9l-1 54q0 10-11 13l-23 5-1 73-21 5Zm20 14-1 38 14-3 1-38Z"/>
+    <path d="m376 340 15-4v-8l26 12-26 24v-9l-15 3Z"/>
+  </g>
+</svg>
