@@ -450,9 +450,27 @@ button:focus-visible, a:focus-visible { outline: 2px solid #fff; outline-offset:
   stroke-width: 1.65;
   filter: drop-shadow(0 1px 2px #031529b3);
 }
-.app-icon.nintendo { background: #e60012; }
-.app-icon.ubc { background: #fff; }
-.app-icon.girls-who-leap { background: #000; }
+.app-icon:is(.nintendo, .ubc, .girls-who-leap) {
+  --icon-facets: linear-gradient(
+    45deg,
+    #ffffff12 40%,
+    transparent 40% 60%,
+    var(--icon-band-shadow, #00000026) 60%
+  );
+}
+.app-icon.nintendo {
+  --icon-light: #e60012;
+  --icon-dark: #9c000f;
+  --icon-band-shadow: #4d000025;
+}
+.app-icon.ubc {
+  --icon-light: #ffcc00;
+  --icon-dark: #b78700;
+}
+.app-icon.girls-who-leap {
+  --icon-light: #373737;
+  --icon-dark: #101010;
+}
 .app-grid[data-screen="Experience"] .app-icon.girls-who-leap {
   border-color: transparent;
 }
