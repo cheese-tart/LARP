@@ -208,7 +208,7 @@ button:focus-visible, a:focus-visible { outline: 2px solid #fff; outline-offset:
   opacity: 0;
   visibility: hidden;
   transition: opacity 800ms ease-out, visibility 800ms;
-  filter: brightness(.74) sepia(1) saturate(1.4) hue-rotate(-15deg);
+  filter: brightness(.68) sepia(.55) saturate(1.1) hue-rotate(175deg);
   mask-image:
     linear-gradient(to right, transparent, #000 63%),
     linear-gradient(to bottom, transparent, #000 12%, #000 88%, transparent);
