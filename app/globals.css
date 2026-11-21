@@ -109,6 +109,8 @@ button:focus-visible, a:focus-visible { outline: 2px solid #fff; outline-offset:
 }
 .status-strip {
   --status-bevel: 36px;
+  position: relative;
+  z-index: 1;
   display: flex;
   align-items: center;
   gap: 12px;
@@ -200,7 +202,7 @@ button:focus-visible, a:focus-visible { outline: 2px solid #fff; outline-offset:
   inset-block-end: 0;
   inset-inline-end: 0;
   width: min(66%, 74dvh);
-  height: 100%;
+  height: 100dvh;
   object-fit: cover;
   object-position: right center;
   z-index: -1;
@@ -209,10 +211,7 @@ button:focus-visible, a:focus-visible { outline: 2px solid #fff; outline-offset:
   visibility: hidden;
   transition: opacity 800ms ease-out, visibility 800ms;
   filter: brightness(.68) sepia(.55) saturate(1.1) hue-rotate(175deg);
-  mask-image:
-    linear-gradient(to right, transparent, #000 63%),
-    linear-gradient(to bottom, transparent, #000 12%, #000 88%, transparent);
-  mask-composite: intersect;
+  mask-image: linear-gradient(to right, transparent, #000 63%);
 }
 .home-backdrop[data-visible] {
   opacity: .55;
@@ -582,10 +581,7 @@ button:focus-visible, a:focus-visible { outline: 2px solid #fff; outline-offset:
   .display-toggle { padding-inline: 6px; }
   .home-backdrop {
     width: min(86%, 46dvh);
-    height: 64%;
-    mask-image:
-      linear-gradient(to right, transparent, #000 32%),
-      linear-gradient(to bottom, transparent, #000 24%, #000 86%, transparent);
+    mask-image: linear-gradient(to right, transparent, #000 32%);
   }
   .side-rail { display: contents; }
   .side-rail::before { content: none; }
@@ -599,13 +595,21 @@ button:focus-visible, a:focus-visible { outline: 2px solid #fff; outline-offset:
   .side-nav {
     grid-area: nav;
     position: relative;
-    isolation: isolate;
     display: grid;
     grid-template-columns: repeat(6, minmax(0, 1fr));
     background: linear-gradient(155deg, #0c1524, #070e1a 72%);
   }
-  .side-nav::before { background: linear-gradient(155deg, var(--sport-rail-light), var(--sport-rail-dark) 72%); }
-  .side-rail button { min-height: 64px; padding-inline: 2px; font-size: 12px; }
+  .side-nav::before {
+    z-index: 0;
+    background: linear-gradient(155deg, var(--sport-rail-light), var(--sport-rail-dark) 72%);
+  }
+  .side-rail button {
+    position: relative;
+    z-index: 1;
+    min-height: 64px;
+    padding-inline: 2px;
+    font-size: 12px;
+  }
   .screen-content { padding: 24px 14px 30px; }
   .app-tile { font-size: 14px; }
 }
