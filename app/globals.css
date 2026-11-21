@@ -618,6 +618,11 @@ button:focus-visible, a:focus-visible { outline: 2px solid #fff; outline-offset:
   }
   .screen-content { padding: 24px 14px 30px; }
   .home-intro { max-width: 100%; }
+  .app-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    max-width: calc(2 * var(--tile-size) + var(--tile-gap));
+    margin-inline: auto;
+  }
   .app-tile { font-size: 14px; }
 }
 
