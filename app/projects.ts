@@ -22,11 +22,11 @@ export const projects: readonly Project[] = [
   },
   {
     name: "Spam or Ham?",
-    githubUrl: "",
+    githubUrl: "https://github.com/cheese-tart/New-folder",
     className: "spam-or-ham",
     logo: { src: "/spam-or-ham.png", width: 216, height: 216 },
-    detail: "",
-    tags: "",
+    detail: "Text classification pipeline with scikit-learn for email and SMS spam detection, containerized with Docker and deployed on AWS.",
+    tags: "Python · FastAPI · scikit-learn · TypeScript · React · Docker · AWS",
   }
 ];
 

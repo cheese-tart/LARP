@@ -333,7 +333,7 @@ button:focus-visible, a:focus-visible { outline: 2px solid #fff; outline-offset:
   --intro-accent: var(--mode-accent, var(--rail-selected));
   position: relative;
   isolation: isolate;
-  max-width: 84rem;
+  max-width: min(75%, 84rem);
   margin-block-start: clamp(8px, 6vh, 64px);
   padding: clamp(28px, 6vw, 64px) calc(var(--intro-bevel) + clamp(10px, 2vw, 26px));
 }
@@ -365,12 +365,12 @@ button:focus-visible, a:focus-visible { outline: 2px solid #fff; outline-offset:
 .home-role {
   margin-block-start: 1rem;
   color: var(--rail-selected);
-  font-size: clamp(1.125rem, 2.4vw, 1.5rem);
+  font-size: clamp(1.375rem, 3.1vw, 2rem);
   transition: color 300ms ease;
 }
 .home-aside {
   margin-block-start: .75rem;
-  font-size: clamp(1.0625rem, 1.9vw, 1.25rem);
+  font-size: clamp(1.1875rem, 2.5vw, 1.5rem);
 }
 .app-grid {
   --tile-size: 136px;
@@ -438,10 +438,9 @@ button:focus-visible, a:focus-visible { outline: 2px solid #fff; outline-offset:
   height: 72px;
   color: #fff;
 }
-.portfolio[data-mode="Sport"] .app-grid[data-screen="Overview"] .app-icon:not(.nintendo, .spam-or-ham) {
+.portfolio[data-mode="Sport"] .app-grid[data-screen="Overview"] .app-icon:not(.nintendo, .ubc, .spam-or-ham) {
   border-image: linear-gradient(135deg, #d8ecff, #7598bd 48%, #20334e) 1;
 }
-.app-grid .app-icon.spam-or-ham { border: 0; }
 .icon-tone { fill: currentColor; fill-opacity: .24; }
 .app-grid .app-icon svg {
   width: 44px;
@@ -463,12 +462,16 @@ button:focus-visible, a:focus-visible { outline: 2px solid #fff; outline-offset:
   --icon-band-shadow: #4d000025;
 }
 .app-icon.ubc {
-  --icon-light: #ffcc00;
-  --icon-dark: #b78700;
+  --icon-light: #edc95e;
+  --icon-dark: #fff;
+  border-image: linear-gradient(135deg, #fff3c4, #bd923e 48%, #78551f) 1;
 }
 .app-icon.girls-who-leap {
   --icon-light: #373737;
   --icon-dark: #101010;
+}
+.portfolio[data-mode="Sport"] .app-grid[data-screen="Overview"] .app-icon.girls-who-leap {
+  border-image: linear-gradient(135deg, #505050, #303030 48%, #191919) 1;
 }
 .app-grid[data-screen="Experience"] .app-icon.girls-who-leap {
   border-color: transparent;
@@ -493,7 +496,10 @@ button:focus-visible, a:focus-visible { outline: 2px solid #fff; outline-offset:
   inset: 0;
   margin: auto;
 }
-.app-icon.spam-or-ham { overflow: hidden; }
+.app-icon.spam-or-ham {
+  border: 0;
+  overflow: hidden;
+}
 .app-icon.spam-or-ham .entry-logo {
   width: 100%;
   height: 100%;
@@ -611,6 +617,7 @@ button:focus-visible, a:focus-visible { outline: 2px solid #fff; outline-offset:
     font-size: 12px;
   }
   .screen-content { padding: 24px 14px 30px; }
+  .home-intro { max-width: 100%; }
   .app-tile { font-size: 14px; }
 }
 

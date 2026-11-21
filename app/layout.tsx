@@ -16,7 +16,7 @@ const dinClock = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "chester",
+  title: "hi lol",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
