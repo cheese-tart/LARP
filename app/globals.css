@@ -329,25 +329,41 @@ button:focus-visible, a:focus-visible { outline: 2px solid #fff; outline-offset:
   transition: color 300ms ease;
 }
 .home-intro {
-  --intro-bevel: clamp(12px, 3vw, 40px);
+  --intro-corner: clamp(44px, 9vw, 112px);
   --intro-accent: var(--mode-accent, var(--rail-selected));
+  --intro-accent-dark: color-mix(in srgb, var(--intro-accent) 60%, #261017);
+  --intro-accent-light: color-mix(in srgb, var(--intro-accent) 55%, #fff);
+  --intro-corner-colors: var(--intro-accent-dark), var(--intro-accent), var(--intro-accent-light);
   position: relative;
   isolation: isolate;
   max-width: min(75%, 84rem);
   margin-block-start: clamp(8px, 6vh, 64px);
-  padding: clamp(28px, 6vw, 64px) calc(var(--intro-bevel) + clamp(10px, 2vw, 26px));
+  padding: clamp(28px, 6vw, 64px) clamp(22px, 5vw, 66px);
+  border: 1px solid var(--intro-accent);
+  border-image: linear-gradient(to top right,
+    var(--intro-accent-dark), var(--intro-accent) 20% 80%, var(--intro-accent-light)) 1;
+  background: #060a13a6;
 }
-.home-intro::before {
+.home-intro::before,
+.home-intro::after {
   content: "";
   position: absolute;
-  inset: 0;
+  width: var(--intro-corner);
+  height: var(--intro-corner);
   z-index: -1;
-  clip-path: polygon(0 0, calc(100% - var(--intro-bevel)) 0, 100% 100%, var(--intro-bevel) 100%);
-  border-block-start: 2px solid var(--intro-accent);
-  background:
-    linear-gradient(125deg, color-mix(in srgb, var(--intro-accent) 17%, transparent), transparent 55%),
-    #060a13a6;
-  transition: border-color 300ms ease;
+  pointer-events: none;
+}
+.home-intro::before {
+  top: -1px;
+  right: -1px;
+  clip-path: polygon(0 0, 100% 0, 100% 100%);
+  background: linear-gradient(to bottom, var(--intro-corner-colors));
+}
+.home-intro::after {
+  bottom: -1px;
+  left: -1px;
+  clip-path: polygon(0 0, 100% 100%, 0 100%);
+  background: linear-gradient(to top, var(--intro-corner-colors));
 }
 .home-intro h1 {
   color: inherit;
@@ -628,7 +644,7 @@ button:focus-visible, a:focus-visible { outline: 2px solid #fff; outline-offset:
 
 @media (prefers-reduced-motion: reduce) {
   .portfolio :is(button, .action),
-  .status-bar, .identity, .screen-content h1, .home-intro::before, .home-role,
+  .status-bar, .identity, .screen-content h1, .home-role,
   .sidebar-scrollbar, .screen-content, .home-backdrop,
   .display-area::before, .side-rail::before, .side-nav::before,
   .app-tile::before { transition: none; }
