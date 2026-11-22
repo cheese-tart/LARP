@@ -197,7 +197,7 @@ export default function Home() {
                   <a href="https://www.ubc.ca/" target="_blank" rel="noopener noreferrer">UBC</a>
                   {" computer science student · Incoming software engineer intern @ RBC"}
                 </p>
-                <p className="home-aside">Big (only figuratively{'\u{1F61E}'}) enjoyer of gym, bodybuilding, and cars.</p>
+                <p className="home-aside">Big (only figuratively{'\u{1F61E}'}) enjoyer of the gym, bodybuilding, and cars.</p>
               </div>
             ) : (
               <h1 id="screen-title">{screen}</h1>
