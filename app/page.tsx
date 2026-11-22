@@ -143,9 +143,15 @@ export default function Home() {
               >
                 <Icon name="linkedin" size={17} />
               </a>
-              <button className="status-icon" type="button" aria-label="Résumé" disabled>
+              <a
+                className="status-icon"
+                href="/larpsume.pdf"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Résumé PDF (opens in a new tab)"
+              >
                 <Icon name="resume" size={17} />
-              </button>
+              </a>
             </div>
             <time className="status-clock">
               {clock.digits}{clock.period && <span className="clock-period"> {clock.period}</span>}
@@ -194,10 +200,13 @@ export default function Home() {
               <div className="home-intro">
                 <h1 id="screen-title">Chester Wong</h1>
                 <p className="home-role">
-                  <a href="https://www.ubc.ca/" target="_blank" rel="noopener noreferrer">UBC</a>
-                  {" computer science student · Incoming software engineer intern @ RBC"}
+                  Studying computer science @{" "}
+                  <a href="https://www.ubc.ca/" target="_blank" rel="noopener noreferrer">
+                    UBC
+                  </a>
+                  {" · Incoming software engineer intern @ RBC"}
                 </p>
-                <p className="home-aside">Big (only figuratively{'\u{1F61E}'}) enjoyer of the gym, bodybuilding, and cars.</p>
+                <p className="home-aside">Big fan of: Kengan Ashura, lifting heavy things, and anything with an engine and 4 wheels.</p>
               </div>
             ) : (
               <h1 id="screen-title">{screen}</h1>
