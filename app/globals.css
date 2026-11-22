@@ -4,6 +4,18 @@
   initial-value: transparent;
 }
 
+@property --intro-accent {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+
+@property --icon-border-opacity {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 100%;
+}
+
 :root {
   color-scheme: dark;
   font-weight: 400;
@@ -343,6 +355,7 @@ button:focus-visible, a:focus-visible { outline: 2px solid #fff; outline-offset:
   border-image: linear-gradient(to top right,
     var(--intro-accent-dark), var(--intro-accent) 20% 80%, var(--intro-accent-light)) 1;
   background: #060a13a6;
+  transition: --intro-accent 300ms ease;
 }
 .home-intro::before,
 .home-intro::after {
@@ -453,9 +466,16 @@ button:focus-visible, a:focus-visible { outline: 2px solid #fff; outline-offset:
   width: 72px;
   height: 72px;
   color: #fff;
+  transition: border-color 300ms ease, --icon-border-opacity 300ms ease;
 }
-.portfolio[data-mode="Sport"] .app-grid[data-screen="Overview"] .app-icon:not(.nintendo, .ubc, .spam-or-ham) {
-  border-image: linear-gradient(135deg, #d8ecff, #7598bd 48%, #20334e) 1;
+.app-grid[data-screen="Overview"] .app-icon:not(.nintendo, .ubc, .spam-or-ham) {
+  --icon-border-light: #d8ecff;
+  --icon-border-mid: #7598bd;
+  --icon-border-dark: #20334e;
+  border-image: linear-gradient(135deg,
+    color-mix(in srgb, var(--icon-border-light) var(--icon-border-opacity), transparent),
+    color-mix(in srgb, var(--icon-border-mid) var(--icon-border-opacity), transparent) 48%,
+    color-mix(in srgb, var(--icon-border-dark) var(--icon-border-opacity), transparent)) 1;
 }
 .icon-tone { fill: currentColor; fill-opacity: .24; }
 .app-grid .app-icon svg {
@@ -498,8 +518,10 @@ button:focus-visible, a:focus-visible { outline: 2px solid #fff; outline-offset:
   --icon-light: #373737;
   --icon-dark: #101010;
 }
-.portfolio[data-mode="Sport"] .app-grid[data-screen="Overview"] .app-icon.girls-who-leap {
-  border-image: linear-gradient(135deg, #505050, #303030 48%, #191919) 1;
+.app-grid[data-screen="Overview"] .app-icon.girls-who-leap {
+  --icon-border-light: #505050;
+  --icon-border-mid: #303030;
+  --icon-border-dark: #191919;
 }
 .app-grid[data-screen="Experience"] .app-icon.girls-who-leap {
   border-color: transparent;
@@ -537,7 +559,10 @@ button:focus-visible, a:focus-visible { outline: 2px solid #fff; outline-offset:
 .app-icon.rbc .entry-logo { transform: translateY(-1px); }
 .app-icon.ubc .entry-logo { transform: translateY(1px); }
 .app-icon.girls-who-leap .entry-logo { transform: translate(3%, -4%); }
-.portfolio[data-mode="Comfort"] .app-tile .app-icon { border-color: transparent; }
+.portfolio[data-mode="Comfort"] .app-tile .app-icon {
+  --icon-border-opacity: 0%;
+  border-color: transparent;
+}
 
 .text-panel {
   max-width: 590px;
@@ -659,10 +684,10 @@ button:focus-visible, a:focus-visible { outline: 2px solid #fff; outline-offset:
 
 @media (prefers-reduced-motion: reduce) {
   .portfolio :is(button, .action),
-  .status-bar, .identity, .screen-content h1, .home-role,
+  .status-bar, .identity, .screen-content h1, .home-intro, .home-role,
   .sidebar-scrollbar, .screen-content, .home-backdrop,
   .display-area::before, .side-rail::before, .side-nav::before,
-  .app-tile::before { transition: none; }
+  .app-tile::before, .app-grid .app-icon { transition: none; }
   .portfolio :is(button, .action):active { transform: none; }
   .screen-content, .project-dialog[open] { animation: none; }
 }
