@@ -168,11 +168,6 @@ export default function Home() {
         <aside className="side-rail">
           <strong className="identity" lang="zh-Hant">黃</strong>
           <nav ref={sideNavRef} className="side-nav" aria-label="Portfolio sections" onScroll={showScrollbar}>
-            <button aria-current={screen === "Home" ? "page" : undefined}
-              onClick={() => setScreen("Home")}>
-              <Icon name="home" size={21} />
-              <span>Home</span>
-            </button>
             {shortcuts.map((item) => (
               <button key={item.screen} aria-current={activeSidebarScreen === item.screen ? "page" : undefined}
                 onClick={() => setScreen(item.screen)}>
