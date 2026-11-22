@@ -477,6 +477,18 @@ button:focus-visible, a:focus-visible { outline: 2px solid #fff; outline-offset:
   --icon-dark: #9c000f;
   --icon-band-shadow: #4d000025;
 }
+.app-icon.dumbbell {
+  --icon-light: #e76f00;
+  --icon-dark: #9e3500;
+}
+.app-icon.mountain {
+  --icon-light: #c74634;
+  --icon-dark: #82251d;
+}
+.app-icon.graduation-cap {
+  --icon-light: #3178c6;
+  --icon-dark: #17477f;
+}
 .app-icon.ubc {
   --icon-light: #edc95e;
   --icon-dark: #fff;
@@ -547,10 +559,6 @@ button:focus-visible, a:focus-visible { outline: 2px solid #fff; outline-offset:
 }
 .project-back:hover { background-color: #ffffff12; }
 .school-project-intro { margin: 8px 0 16px; white-space: pre-wrap; overflow-wrap: anywhere; }
-.school-project-list { list-style: none; margin: 12px 0 0; padding: 0; }
-.school-project-list li { border-block-end: 1px solid #ffffff26; padding-block: 12px; }
-.school-project-list h2 { margin: 0; font-size: 16px; }
-.school-project-list p { margin: 6px 0 0; }
 .project-dialog {
   width: min(540px, calc(100% - 32px));
   padding: 0;
@@ -574,8 +582,8 @@ button:focus-visible, a:focus-visible { outline: 2px solid #fff; outline-offset:
   border: 0;
   background: linear-gradient(to right, transparent, #547495 25% 75%, transparent);
 }
-.entry-title-link, .home-role a { color: inherit; text-decoration-thickness: 1px; text-underline-offset: .16em; }
-.entry-title-link:hover, .home-role a:hover { color: var(--accent); }
+.entry-link, .home-role a { color: inherit; text-decoration-thickness: 1px; text-underline-offset: .16em; }
+.entry-link:hover, .home-role a:hover { color: var(--accent); }
 .fine-print { color: #becbe1; font-size: 13px; }
 .close-button {
   position: absolute;
@@ -597,6 +605,10 @@ button:focus-visible, a:focus-visible { outline: 2px solid #fff; outline-offset:
       "display display" minmax(0, 1fr)
       "bottom bottom" var(--bottom-bar-height) / minmax(0, 1fr) auto;
   }
+  .status-bar {
+    align-items: stretch;
+    min-height: 0;
+  }
   .status-strip { --status-bevel: 22px; gap: 6px; }
   .status-icon { width: 30px; }
   .status-clock { font-size: 17px; }
@@ -610,8 +622,11 @@ button:focus-visible, a:focus-visible { outline: 2px solid #fff; outline-offset:
   .identity {
     grid-area: name;
     place-items: center start;
+    min-height: 0;
+    padding-block: 0;
     padding-inline: 12px 0;
     text-align: left;
+    font-size: 32px;
     background: var(--screen-top);
   }
   .side-nav {

@@ -10,7 +10,7 @@ import { projects, schoolProjects, schoolProjectsIntro } from "./projects";
 const shortcuts = [
   { screen: "Overview", label: "Overview", icon: "grid", color: "home" },
   { screen: "Experience", label: "Experience", icon: "briefcase", color: "experience" },
-  { screen: "Projects", label: "All projects", sidebarLabel: "Projects", icon: "tools", color: "projects" },
+  { screen: "Projects", label: "All projects", sidebarLabel: "Projects", icon: "wrench", color: "projects" },
   { screen: "About", label: "About", icon: "user", color: "profile" },
   { screen: "Contact", label: "Contact", icon: "mail", color: "contact" },
 ] as const;
@@ -23,7 +23,7 @@ const schoolProjectsTile = {
 } as const;
 
 type Section = "Home" | (typeof shortcuts)[number]["screen"] | typeof schoolProjectsTile.screen;
-type PortfolioEntry = (typeof projects)[number] | (typeof experiences)[number];
+type PortfolioEntry = (typeof projects)[number] | (typeof schoolProjects)[number] | (typeof experiences)[number];
 
 function experienceLocation(entry: (typeof experiences)[number]) {
   return entry.location?.trim() || "Location TBD";
@@ -31,17 +31,17 @@ function experienceLocation(entry: (typeof experiences)[number]) {
 
 function EntryIcon({ entry, size }: { entry: PortfolioEntry | typeof schoolProjectsTile; size: number }) {
   return (
-    <span className={`app-icon ${entry.className}`}>
+    <span className={`app-icon ${entry.className ?? "tools"}`}>
       {entry.logo
         ? <Image className="entry-logo" {...entry.logo} alt="" unoptimized />
-        : <Icon name={entry.className} size={size} />}
+        : <Icon name={entry.className ?? "tools"} size={size} />}
     </span>
   );
 }
 
-function EntryTitle({ name, url }: { name: string; url?: string }) {
+function EntryLink({ name, url }: { name: string; url?: string }) {
   return url ? (
-    <a className="entry-title-link" href={url} target="_blank" rel="noopener noreferrer">{name}</a>
+    <a className="entry-link" href={url} target="_blank" rel="noopener noreferrer">{name}</a>
   ) : name;
 }
 
@@ -51,6 +51,7 @@ const entriesBySection: Partial<Record<Section, readonly PortfolioEntry[]>> = {
 };
 
 const projectTiles = [...[...projects].reverse(), schoolProjectsTile];
+const schoolProjectTiles = [...schoolProjects].reverse();
 
 const overviewTiles = [
   ...Object.values(entriesBySection).flat(),
@@ -73,6 +74,7 @@ export default function Home() {
   const scrollbarTimers = useRef(new Map<HTMLElement, number>());
   const tiles = screen === "Overview" ? overviewTiles
     : screen === "Projects" ? projectTiles
+    : screen === "School Projects" ? schoolProjectTiles
     : entriesBySection[screen];
   const activeSidebarScreen = screen === "School Projects" ? schoolProjectsOrigin : screen;
   const projectGitHubUrl = selected && "githubUrl" in selected ? selected.githubUrl : undefined;
@@ -195,12 +197,22 @@ export default function Home() {
                   <a href="https://www.ubc.ca/" target="_blank" rel="noopener noreferrer">UBC</a>
                   {" computer science student · Incoming software engineer intern @ RBC"}
                 </p>
-                <p className="home-aside">Huge (only figuratively{'\u{1F61E}'}) gym fanatic and avid car nerd.</p>
+                <p className="home-aside">Big (only figuratively{'\u{1F61E}'}) enjoyer of gym, bodybuilding, and cars.</p>
               </div>
             ) : (
               <h1 id="screen-title">{screen}</h1>
             )}
-            {tiles && (
+            {screen === "School Projects" && (
+              <div className="text-panel">
+                <button className="project-back" type="button" aria-label={`Back to ${schoolProjectsOrigin}`}
+                  onClick={() => setScreen(schoolProjectsOrigin)}>
+                  <Icon name="back" size={20} />
+                </button>
+                {schoolProjectsIntro.trim() && <p className="school-project-intro">{schoolProjectsIntro}</p>}
+                {schoolProjects.length === 0 && <p>No school projects listed yet.</p>}
+              </div>
+            )}
+            {!!tiles?.length && (
               <div className="app-grid" data-screen={screen}>
                 {tiles.map((item) => "screen" in item ? (
                   <button className="app-tile" key={item.screen} onClick={() => {
@@ -215,32 +227,13 @@ export default function Home() {
                     <strong>{item.label}</strong>
                   </button>
                 ) : (
-                  <button className="app-tile" key={item.className} aria-haspopup="dialog"
+                  <button className="app-tile" key={`${item.name}:${("githubUrl" in item && item.githubUrl) || item.className}`}
+                    aria-haspopup="dialog"
                     data-selected={selected === item} onClick={() => setSelected(item)}>
                     <EntryIcon entry={item} size={29} />
                     <strong>{item.name}</strong>
                   </button>
                 ))}
-              </div>
-            )}
-
-            {screen === "School Projects" && (
-              <div className="text-panel">
-                <button className="project-back" type="button" aria-label={`Back to ${schoolProjectsOrigin}`}
-                  onClick={() => setScreen(schoolProjectsOrigin)}>
-                  <Icon name="back" size={20} />
-                </button>
-                {schoolProjectsIntro.trim() && <p className="school-project-intro">{schoolProjectsIntro}</p>}
-                {schoolProjects.length ? (
-                  <ul className="school-project-list" role="list">
-                    {schoolProjects.map((project) => (
-                      <li key={`${project.name}:${project.githubUrl}`}>
-                        <h2><EntryTitle name={project.name} url={project.githubUrl} /></h2>
-                        {project.detail && <p>{project.detail}</p>}
-                      </li>
-                    ))}
-                  </ul>
-                ) : <p>No school projects listed yet.</p>}
               </div>
             )}
 
@@ -276,12 +269,16 @@ export default function Home() {
             <EntryIcon entry={selected} size={28} />
             {experienceDetails && <p className="fine-print">{experienceDetails}</p>}
             <h2 id="entry-title">
-              <EntryTitle name={selected.name}
+              <EntryLink name={selected.name}
                 url={"companyUrl" in selected ? selected.companyUrl : projectGitHubUrl} />
             </h2>
             {jobTitle && <p className="job-title">{jobTitle}</p>}
             {jobTitle && selected.detail && <hr className="job-description-divider" />}
-            {selected.detail && <p>{selected.detail}</p>}
+            {selected.detail && (
+              <p>{typeof selected.detail === "string" ? selected.detail : selected.detail.map((part) => (
+                typeof part === "string" ? part : <EntryLink key={part.url} name={part.text} url={part.url} />
+              ))}</p>
+            )}
             {selected.tags && <p className="fine-print">{selected.tags}</p>}
           </div>
         )}
