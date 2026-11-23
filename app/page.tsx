@@ -183,7 +183,7 @@ export default function Home() {
           <Image
             className="home-backdrop"
             data-visible={screen === "Home" ? "" : undefined}
-            src="/manga-panel.jpg"
+            src="/blue-lock.jpg"
             width={736}
             height={1109}
             alt=""
