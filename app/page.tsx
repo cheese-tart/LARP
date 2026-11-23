@@ -219,6 +219,7 @@ export default function Home() {
             className="home-backdrop"
             data-visible={screen === "Home" ? "" : undefined}
             src="/blue-lock.jpg"
+            loading="eager"
             width={736}
             height={1109}
             alt=""
