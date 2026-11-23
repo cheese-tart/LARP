@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useRef, useState, type UIEvent } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore, type UIEvent } from "react";
 import { Icon } from "./components/portfolio-icon";
 import { SidebarScrollbar } from "./components/sidebar-scrollbar";
 import { experiences } from "./experiences";
@@ -24,6 +24,41 @@ const schoolProjectsTile = {
 
 type Section = "Home" | (typeof shortcuts)[number]["screen"] | typeof schoolProjectsTile.screen;
 type PortfolioEntry = (typeof projects)[number] | (typeof schoolProjects)[number] | (typeof experiences)[number];
+type DisplayMode = "Comfort" | "Sport";
+
+const defaultMode: DisplayMode = "Comfort";
+const modeStorageKey = "portfolio-display-mode";
+const modeChangeEvent = "portfolio-display-mode-change";
+let fallbackMode: DisplayMode | undefined;
+
+function getDisplayMode(): DisplayMode {
+  if (fallbackMode) return fallbackMode;
+  try {
+    return window.localStorage.getItem(modeStorageKey) === "Sport" ? "Sport" : defaultMode;
+  } catch {
+    return defaultMode;
+  }
+}
+
+function subscribeToDisplayMode(onChange: () => void) {
+  window.addEventListener(modeChangeEvent, onChange);
+  window.addEventListener("storage", onChange);
+  return () => {
+    window.removeEventListener(modeChangeEvent, onChange);
+    window.removeEventListener("storage", onChange);
+  };
+}
+
+function toggleDisplayMode() {
+  const nextMode = getDisplayMode() === "Comfort" ? "Sport" : "Comfort";
+  try {
+    window.localStorage.setItem(modeStorageKey, nextMode);
+    fallbackMode = undefined;
+  } catch {
+    fallbackMode = nextMode;
+  }
+  window.dispatchEvent(new Event(modeChangeEvent));
+}
 
 function experienceLocation(entry: (typeof experiences)[number]) {
   return entry.location?.trim() || "Location TBD";
@@ -66,7 +101,7 @@ const overviewTiles = [
 export default function Home() {
   const [screen, setScreen] = useState<Section>("Home");
   const [schoolProjectsOrigin, setSchoolProjectsOrigin] = useState<"Overview" | "Projects">("Projects");
-  const [mode, setMode] = useState<"Comfort" | "Sport">("Sport");
+  const mode = useSyncExternalStore(subscribeToDisplayMode, getDisplayMode, () => defaultMode);
   const [clock, setClock] = useState({ digits: "--:--", period: "" });
   const [selected, setSelected] = useState<PortfolioEntry | null>(null);
   const dialogRef = useRef<HTMLDialogElement>(null);
@@ -158,7 +193,7 @@ export default function Home() {
             </time>
             <button className="display-toggle" aria-label={`Sport display mode, ${mode === "Sport" ? "on" : "off"}`}
               aria-pressed={mode === "Sport"}
-              onClick={() => setMode((current) => current === "Comfort" ? "Sport" : "Comfort")}>
+              onClick={toggleDisplayMode}>
               <Icon name={mode === "Sport" ? "sport" : "comfort"} size={19} />
               <span>{mode}</span>
             </button>

@@ -23,11 +23,11 @@ export const projects: readonly Project[] = [
   },
   {
     name: "Spam or Ham?",
-    githubUrl: "https://github.com/cheese-tart/New-folder",
+    githubUrl: "https://github.com/cheese-tart/Spam-or-Ham",
     className: "spam-or-ham",
     logo: { src: "/spam-or-ham.png", width: 216, height: 216 },
     detail: "Text classification pipeline with scikit-learn for email and SMS spam detection, containerized with Docker and deployed on AWS.",
-    tags: "Python · FastAPI · scikit-learn · TypeScript · React · Docker · AWS",
+    tags: "Python · FastAPI · Pydantic · scikit-learn · TypeScript · React · Docker · AWS",
   }
 ];
 
@@ -53,7 +53,7 @@ export const schoolProjects: readonly SchoolProject[] = [
     githubUrl: "https://github.com/cheese-tart/Take-a-Hike",
     className: "mountain",
     detail: "Essentially a mini Strava clone. Application of relational database theory taught in CPSC 304.",
-    tags: "JavaScript · SQL · Node.js · Express.js · OracleDB",
+    tags: "JavaScript · Node.js · Express.js · OracleDB · SQL",
   },
   {
     name: "UBC Course Insights",

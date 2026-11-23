@@ -20,7 +20,7 @@ export const experiences: readonly Experience[] = [
     className: "girls-who-leap",
     logo: { src: "/girls-who-leap-logo.svg", width: 244, height: 206 },
     detail: "Portable communication platform.",
-    tags: "TypeScript, Supabase, React Native, PostgreSQL",
+    tags: "TypeScript · React Native · Expo · Supabase · PostgreSQL · SQL",
   },
   {
     name: "RBC",
