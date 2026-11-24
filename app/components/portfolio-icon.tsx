@@ -35,6 +35,7 @@ const paths = {
     </>
   ),
   user: <><path className="icon-tone" d="M4 22v-3a8 8 0 0 1 16 0v3z" /><circle cx="12" cy="7" r="4" /><path d="m8 14 4 4 4-4" /></>,
+  notebook: <><rect className="icon-tone" x="5" y="2" width="15" height="20" rx="2" /><path d="M3 6h4m-4 6h4m-4 6h4m3-10h6m-6 4h6m-6 4h4" /></>,
   mail: <><path className="icon-tone" d="M2 6h20v15H2z" /><path d="m2 6 10 8L22 6M2 21l7-7m13 7-7-7M7 3h10" /></>,
   sport: <><path className="icon-tone" d="M4 20a10 10 0 1 1 16 0z" /><path d="M4 20a10 10 0 1 1 16 0H4ZM5 12h2m10 0h2M12 5v2M6 6l1.5 1.5M18 6l-1.5 1.5M12 15l5-6" /><circle cx="12" cy="15" r="1.5" fill="currentColor" stroke="none" /></>,
   comfort: <><path className="icon-tone" d="M4 20a10 10 0 1 1 16 0z" /><path d="M4 20a10 10 0 1 1 16 0H4ZM5 12h2m10 0h2M12 5v2M6 6l1.5 1.5M18 6l-1.5 1.5M12 15l-4-4" /><circle cx="12" cy="15" r="1.5" fill="currentColor" stroke="none" /></>,

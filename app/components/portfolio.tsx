@@ -1,17 +1,19 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useRef, useState, useSyncExternalStore, type UIEvent } from "react";
-import { Icon } from "./components/portfolio-icon";
-import { SidebarScrollbar } from "./components/sidebar-scrollbar";
-import { experiences } from "./experiences";
-import { projects, schoolProjects, schoolProjectsIntro } from "./projects";
+import { useRouter, useSelectedLayoutSegments } from "next/navigation";
+import { useEffect, useRef, useState, useSyncExternalStore, type ReactNode, type UIEvent } from "react";
+import { Icon } from "./portfolio-icon";
+import { SidebarScrollbar } from "./sidebar-scrollbar";
+import { experiences } from "../experiences";
+import { projects, schoolProjects, schoolProjectsIntro } from "../projects";
 
 const shortcuts = [
   { screen: "Overview", label: "Overview", icon: "grid", color: "home" },
   { screen: "Experience", label: "Experience", icon: "briefcase", color: "experience" },
   { screen: "Projects", label: "All projects", sidebarLabel: "Projects", icon: "wrench", color: "projects" },
   { screen: "About", label: "About", icon: "user", color: "profile" },
+  { screen: "Blog", label: "Blog", icon: "notebook", color: "blog" },
   { screen: "Contact", label: "Contact", icon: "mail", color: "contact" },
 ] as const;
 
@@ -98,8 +100,12 @@ const overviewTiles = [
   return firstLabel.localeCompare(secondLabel, "en");
 });
 
-export default function Home() {
-  const [screen, setScreen] = useState<Section>("Home");
+export function Portfolio({ children }: { children: ReactNode }) {
+  const router = useRouter();
+  const [segment, blogSlug] = useSelectedLayoutSegments();
+  const [portfolioScreen, setPortfolioScreen] = useState<Exclude<Section, "Blog">>("Home");
+  const screen = segment === "blog" ? "Blog" : portfolioScreen;
+  const showRouteContent = screen === "Home" || screen === "Blog";
   const [schoolProjectsOrigin, setSchoolProjectsOrigin] = useState<"Overview" | "Projects">("Projects");
   const mode = useSyncExternalStore(subscribeToDisplayMode, getDisplayMode, () => defaultMode);
   const [clock, setClock] = useState({ digits: "--:--", period: "" });
@@ -118,6 +124,16 @@ export default function Home() {
   const experienceDetails = selectedExperience
     ? [selectedExperience.period, experienceLocation(selectedExperience)].filter(Boolean).join(" · ")
     : "";
+
+  function setScreen(nextScreen: Section) {
+    if (nextScreen === "Blog") {
+      router.push("/blog");
+      return;
+    }
+
+    setPortfolioScreen(nextScreen);
+    if (screen === "Blog") router.push("/");
+  }
 
   function showScrollbar(event: UIEvent<HTMLElement>) {
     const pane = event.currentTarget;
@@ -201,7 +217,9 @@ export default function Home() {
         </header>
 
         <aside className="side-rail">
-          <strong className="identity" lang="zh-Hant">黃</strong>
+          <strong className="identity" lang="zh-Hant">
+            <span className="identity-character">黃</span>
+          </strong>
           <nav ref={sideNavRef} className="side-nav" aria-label="Portfolio sections" onScroll={showScrollbar}>
             {shortcuts.map((item) => (
               <button key={item.screen} aria-current={activeSidebarScreen === item.screen ? "page" : undefined}
@@ -225,23 +243,11 @@ export default function Home() {
             alt=""
             unoptimized
           />
-          <section key={screen} className="screen-content" aria-labelledby="screen-title"
+          <section key={blogSlug ?? screen} className="screen-content"
+            aria-labelledby={showRouteContent ? "screen-title" : "portfolio-section-title"}
             tabIndex={0} onScroll={showScrollbar}>
-            {screen === "Home" ? (
-              <div className="home-intro">
-                <h1 id="screen-title">Chester Wong</h1>
-                <p className="home-role">
-                  Studying computer science @{" "}
-                  <a href="https://www.ubc.ca/" target="_blank" rel="noopener noreferrer">
-                    UBC
-                  </a>
-                  {" · Incoming software engineer intern @ RBC"}
-                </p>
-                <p className="home-aside">Big fan of: Kengan Ashura, lifting heavy things, and anything with an engine and 4 wheels.</p>
-              </div>
-            ) : (
-              <h1 id="screen-title">{screen}</h1>
-            )}
+            <div className="route-content" hidden={!showRouteContent}>{children}</div>
+            {!showRouteContent && <h1 id="portfolio-section-title">{screen}</h1>}
             {screen === "School Projects" && (
               <div className="text-panel">
                 <button className="project-back" type="button" aria-label={`Back to ${schoolProjectsOrigin}`}
@@ -285,7 +291,7 @@ export default function Home() {
 
             {screen === "Contact" && (
               <div className="text-panel">
-                <p>Feel free to reach out via email or linkedin!</p>
+                <p>Feel free to reach out via email or linkedin, especially if you have referrals to give! ;{")"}</p>
                 <a className="action" href="mailto:w.chester@outlook.com"><Icon name="mail" size={20} />w.chester@outlook.com</a>
               </div>
             )}
