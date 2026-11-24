@@ -314,10 +314,12 @@ button:focus-visible, a:focus-visible { outline: 2px solid #fff; outline-offset:
   overflow-y: auto;
   overscroll-behavior-y: contain;
   padding: 27px clamp(20px, 4vw, 52px) 42px;
-  animation: panel-in 200ms ease-out;
   scrollbar-width: thin;
   scrollbar-color: var(--scrollbar-thumb) transparent;
   transition: --scrollbar-thumb 250ms ease-out;
+}
+.screen-content:not([data-blog-post]), .blog-article {
+  animation: panel-in 200ms ease-out;
 }
 .screen-content[data-scrolling] {
   --scrollbar-thumb: #fff;
@@ -744,5 +746,5 @@ button:focus-visible, a:focus-visible { outline: 2px solid #fff; outline-offset:
   .display-area::before, .side-rail::before, .side-nav::before,
   .app-tile::before, .app-grid .app-icon { transition: none; }
   .portfolio :is(button, .action):active { transform: none; }
-  .screen-content, .project-dialog[open] { animation: none; }
+  .screen-content:not([data-blog-post]), .blog-article, .project-dialog[open] { animation: none; }
 }

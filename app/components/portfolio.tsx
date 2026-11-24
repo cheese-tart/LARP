@@ -244,6 +244,7 @@ export function Portfolio({ children }: { children: ReactNode }) {
             unoptimized
           />
           <section key={blogSlug ?? screen} className="screen-content"
+            data-blog-post={blogSlug ? "" : undefined}
             aria-labelledby={showRouteContent ? "screen-title" : "portfolio-section-title"}
             tabIndex={0} onScroll={showScrollbar}>
             <div className="route-content" hidden={!showRouteContent}>{children}</div>
