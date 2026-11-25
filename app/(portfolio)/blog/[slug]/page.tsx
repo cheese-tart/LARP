@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { blogPosts, formatBlogDate } from "../posts";
@@ -26,7 +25,6 @@ async function BlogPost({ params }: Pick<PageProps<"/blog/[slug]">, "params">) {
       <div className="blog-body">
         <Body />
       </div>
-      <Link className="entry-link blog-back" href="/blog">Back to Blog</Link>
     </article>
   );
 }

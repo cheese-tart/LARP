@@ -461,7 +461,16 @@ button:focus-visible, a:focus-visible { outline: 2px solid #fff; outline-offset:
 .blog-body img { max-width: 100%; height: auto; vertical-align: middle; }
 .blog-body a, .blog-back { color: var(--accent); }
 .blog-body pre { overflow-x: auto; }
-.blog-back { display: inline-block; margin-block-start: 1rem; }
+.blog-back {
+  margin-block-start: 1rem;
+  padding: 0;
+  border: 0;
+  background: none;
+  line-height: 1.65;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: .16em;
+}
 .app-grid {
   --tile-size: 136px;
   --tile-gap: clamp(20px, 5vw, 28px);

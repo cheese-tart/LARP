@@ -10,7 +10,7 @@ type BlogPost = {
 // Each entry's key becomes its article URL, such as `/blog/first-post`.
 // Create a file in ./posts, import it here, and add it at the end to put it at the top of the Blog.
 export const blogPosts: Record<string, BlogPost> = {
-  "first-post": firstPost,
+  "test-post": firstPost,
 };
 
 const dateFormatter = new Intl.DateTimeFormat("en-US", { dateStyle: "long", timeZone: "UTC" });

@@ -100,12 +100,13 @@ const overviewTiles = [
   return firstLabel.localeCompare(secondLabel, "en");
 });
 
-export function Portfolio({ children }: { children: ReactNode }) {
+export function Portfolio({ children, blogList }: { children: ReactNode; blogList: ReactNode }) {
   const router = useRouter();
   const [segment, blogSlug] = useSelectedLayoutSegments();
-  const [portfolioScreen, setPortfolioScreen] = useState<Exclude<Section, "Blog">>("Home");
+  const [portfolioScreen, setPortfolioScreen] = useState<Section>("Home");
   const screen = segment === "blog" ? "Blog" : portfolioScreen;
   const showRouteContent = screen === "Home" || screen === "Blog";
+  const showBlogList = screen === "Blog" && segment !== "blog";
   const [schoolProjectsOrigin, setSchoolProjectsOrigin] = useState<"Overview" | "Projects">("Projects");
   const mode = useSyncExternalStore(subscribeToDisplayMode, getDisplayMode, () => defaultMode);
   const [clock, setClock] = useState({ digits: "--:--", period: "" });
@@ -126,13 +127,8 @@ export function Portfolio({ children }: { children: ReactNode }) {
     : "";
 
   function setScreen(nextScreen: Section) {
-    if (nextScreen === "Blog") {
-      router.push("/blog");
-      return;
-    }
-
     setPortfolioScreen(nextScreen);
-    if (screen === "Blog") router.push("/");
+    if (segment === "blog") router.push("/");
   }
 
   function showScrollbar(event: UIEvent<HTMLElement>) {
@@ -247,7 +243,14 @@ export function Portfolio({ children }: { children: ReactNode }) {
             data-blog-post={blogSlug ? "" : undefined}
             aria-labelledby={showRouteContent ? "screen-title" : "portfolio-section-title"}
             tabIndex={0} onScroll={showScrollbar}>
-            <div className="route-content" hidden={!showRouteContent}>{children}</div>
+            <div className="route-content" hidden={!showRouteContent}>
+              {showBlogList ? blogList : children}
+              {blogSlug && (
+                <button className="blog-back" type="button" onClick={() => setScreen("Blog")}>
+                  Back to Blog
+                </button>
+              )}
+            </div>
             {!showRouteContent && <h1 id="portfolio-section-title">{screen}</h1>}
             {screen === "School Projects" && (
               <div className="text-panel">
